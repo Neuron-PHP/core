@@ -6,3 +6,34 @@ node_modules
 .idea
 .DS_STORE
 public_html/
+
+# Mac finder artifacts
+.DS_Store
+
+# Netbeans project directory
+/nbproject/
+
+# RubyMine project files
+.idea
+
+# Textmate project files
+/*.tmproj
+
+# vim artifacts
+**.swp
+
+robots.txt
+
+html/
+
+composer.phar
+
+/vendor/
+
+/build/api/*
+/build/logs/*
+/build/coverage/*
+/build/pdepend/*
+
+cache.properties
+composer.lock
