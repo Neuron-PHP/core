@@ -1,0 +1,24 @@
+{
+    "name": "neuron-php/data",
+    "description": "PHP data utility classes.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lee Jones",
+            "email": "lee@dragonflyrg.com"
+        }
+    ],
+    "require": {
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "7.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Neuron\\": "src/"
+        }
+    }
+}
