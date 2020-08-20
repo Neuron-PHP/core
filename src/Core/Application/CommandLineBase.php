@@ -10,7 +10,7 @@ namespace Neuron\Core\Application;
 
 abstract class CommandLineBase extends Base
 {
-	private $_aHandlers;
+	private array $_Handlers;
 
 	/**
 	 * @return array - accessor for the parameter array.
@@ -18,7 +18,7 @@ abstract class CommandLineBase extends Base
 
 	protected function getHandlers()
 	{
-		return $this->_aHandlers;
+		return $this->_Handlers;
 	}
 
 	/**
@@ -35,7 +35,7 @@ abstract class CommandLineBase extends Base
 
 	protected function addHandler( $sSwitch, $sDescription, $method, $bParam = false )
 	{
-		$this->_aHandlers[ $sSwitch ] = [
+		$this->_Handlers[ $sSwitch ] = [
 			'description'	=> $sDescription,
 			'method'			=> $method,
 			'param'			=> $bParam
@@ -49,6 +49,7 @@ abstract class CommandLineBase extends Base
 	protected function processParameters()
 	{
 		$paramcount = count( $this->getParameters() );
+
 		for( $c = 0; $c < $paramcount; $c++ )
 		{
 			$sParam = $this->getParameters()[ $c ];
@@ -99,7 +100,7 @@ abstract class CommandLineBase extends Base
 	 * @return bool
 	 */
 
-	protected function onStart()
+	protected function onStart() : bool
 	{
 		if( !$this->isCommandLine() )
 		{
