@@ -2,10 +2,11 @@
 
 namespace Neuron\Core\Application;
 
-use Neuron\Setting;
 use Neuron\Log;
 use Neuron\Util;
 use Neuron\Patterns\Registry;
+use Neuron\Data\Setting\Source\ISettingSource;
+use Neuron\Data\Setting\Settingmanager;
 
 /**
  * Defines base functionality for applications.
@@ -13,19 +14,20 @@ use Neuron\Patterns\Registry;
 
 abstract class Base extends Log\Base implements IApplication
 {
-	private		$_Logger;
-	private		$_Registry;
-	protected	$_aParameters;
-	protected	$_Settings;
+	private   Log\ILogger  $_Logger;
+	private   ?Registry $_Registry;
+	protected array    $_Parameters;
+	protected Settingmanager $_Settings;
+	protected string $_Version;
 
 	/**
-	 * @param Setting\Source\ISettingSource $Source
+	 * @param ISettingSource $Source
 	 * @return $this
 	 */
 
-	public function setSettingSource( Setting\Source\ISettingSource $Source )
+	public function setSettingSource( ISettingSource $Source )
 	{
-		$this->_Settings = new Setting\SettingManager( $Source );
+		$this->_Settings = new SettingManager( $Source );
 		return $this;
 	}
 
@@ -41,14 +43,14 @@ abstract class Base extends Log\Base implements IApplication
 	}
 
 	/**
-	 * @param $sName
-	 * @param $sValue
-	 * @param string $sSection
+	 * @param string $Name
+	 * @param string $Value
+	 * @param string $Section
 	 */
 
-	public function setSetting( $sName, $sValue, $sSection = 'default' )
+	public function setSetting( string $Name, string $Value, string $Section = 'default' )
 	{
-		$this->_Settings->set( $sSection, $sName, $sValue );
+		$this->_Settings->set( $Section, $Name, $Value );
 	}
 
 	/**
@@ -61,10 +63,11 @@ abstract class Base extends Log\Base implements IApplication
 	}
 
 	/**
-	 *  Creates and configures the default logger.
+	 * Creates and configures the default logger.
+	 * @param string $Version
 	 */
 
-	public function __construct()
+	public function __construct( string $Version )
 	{
 		$this->_Registry = Registry::getInstance();
 
@@ -76,6 +79,8 @@ abstract class Base extends Log\Base implements IApplication
 
 		$this->_Logger->setRunLevel( Log\ILogger::INFO );
 
+		$this->_Version = $Version;
+
 		parent::__construct( $this->_Logger );
 	}
 
@@ -86,7 +91,7 @@ abstract class Base extends Log\Base implements IApplication
 	 * without executing onRun.
 	 */
 
-	protected function onStart()
+	protected function onStart() : bool
 	{
 		return true;
 	}
@@ -103,13 +108,12 @@ abstract class Base extends Log\Base implements IApplication
 	 * @param \Exception $exception
 	 * @return bool
 	 * Called for any unhandled exceptions.
+	 * Returning false skips executing onFinish.
 	 */
 
-	protected function onError( \Exception $exception )
+	protected function onError( \Exception $exception ) : bool
 	{
 		$this->log( get_class( $exception ).', msg: '.$exception->getMessage(), Log\ILogger::ERROR );
-
-		// Returning false skips executing onFinish.
 
 		return true;
 	}
@@ -124,19 +128,21 @@ abstract class Base extends Log\Base implements IApplication
 	/**
 	 * @return string
 	 * Application version number.
-	 * Must be implemented by derived classes.
 	 */
 
-	public abstract function getVersion();
+	public function getVersion() : string
+	{
+		return $this->_Version;
+	}
 
 	/**
-	 * @param array|null $aArgv
+	 * @param array $Argv
 	 * @return bool
 	 */
 
-	public function run( array $aArgv = null )
+	public function run( array $Argv = [] )
 	{
-		$this->_aParameters = $aArgv;
+		$this->_Parameters = $Argv;
 
 		if( !$this->onStart() )
 		{
@@ -160,7 +166,6 @@ abstract class Base extends Log\Base implements IApplication
 		return true;
 	}
 
-	//region Parameters
 	/**
 	 * @return array
 	 *
@@ -169,21 +174,19 @@ abstract class Base extends Log\Base implements IApplication
 
 	public function getParameters()
 	{
-		return $this->_aParameters;
+		return $this->_Parameters;
 	}
 
 	/**
-	 * @param $param
+	 * @param string $param
 	 * @return mixed
 	 */
 
-	public function getParameter( $param )
+	public function getParameter( string $param )
 	{
-		return $this->_aParameters[ $param ];
+		return $this->_Parameters[ $param ];
 	}
-	//endregion
 
-	//region Logging
 	/**
 	 * @return Log\LogMux
 	 */
@@ -192,10 +195,6 @@ abstract class Base extends Log\Base implements IApplication
 	{
 		return $this->_Logger;
 	}
-
-	//endregion
-
-	//region Registry
 
 	/**
 	 * @param $name
@@ -216,5 +215,4 @@ abstract class Base extends Log\Base implements IApplication
 	{
 		return $this->_Registry->get( $name );
 	}
-	//endregion
 }

@@ -13,8 +13,8 @@ use Neuron\Log;
 
 interface IApplication extends Log\ILogger, Patterns\IRunnable
 {
-	public function getSetting( $sName, $sSection = 'default' );
-	public function setSetting( $sName, $sValue, $sSection = 'default' );
+	public function getSetting( string $Name, string $Section = 'default' );
+	public function setSetting( string $Name, string $Value, string $Section = 'default' );
 
 	public function setRegistryObject( $name, $object );
 	public function getRegistryObject( $name );
