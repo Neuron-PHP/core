@@ -1,3 +1,6 @@
+## 0.5.2 2020-08-20
+* Added Neuron\ExceptionBase
+
 ## 0.5.1 2020-08-20
 * Refactoring.
 
