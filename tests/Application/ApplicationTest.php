@@ -5,11 +5,6 @@ class AppMock extends \Neuron\Core\Application\Base
 	public $Crash     = false;
 	public $FailStart = false;
 
-	public function getVersion()
-	{
-		return '1';
-	}
-
 	protected function onRun()
 	{
 		if( $this->Crash )
@@ -18,7 +13,7 @@ class AppMock extends \Neuron\Core\Application\Base
 		}
 	}
 
-	protected function onStart()
+	protected function onStart() : bool
 	{
 		if( $this->FailStart )
 		{
@@ -28,7 +23,7 @@ class AppMock extends \Neuron\Core\Application\Base
 		return parent::onStart();
 	}
 
-	protected function onError( \Exception $exception )
+	protected function onError( \Exception $exception ) : bool
 	{
 		parent::onError( $exception );
 
@@ -42,7 +37,7 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 
 	public function setup()
 	{
-		$this->_App = new AppMock();
+		$this->_App = new AppMock( "1.0" );
 	}
 
 	public function testRun()
@@ -66,20 +61,6 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 	{
 		$this->assertTrue(
 			$this->_App->isCommandLine()
-		);
-	}
-
-	public function testSettings()
-	{
-		$Source = new \Neuron\Setting\Source\Ini( 'examples/test.ini' );
-
-		$this->_App->setSettingSource( $Source );
-
-		$Value = $this->_App->getSetting( 'name', 'test' );
-
-		$this->assertEquals(
-			'value',
-			$Value
 		);
 	}
 
@@ -113,22 +94,6 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 
 		$this->assertFalse(
 			$this->_App->run()
-		);
-	}
-
-	public function testSetSetting()
-	{
-		$Source = new \Neuron\Setting\Source\Ini( 'examples/test.ini' );
-
-		$this->_App->setSettingSource( $Source );
-
-		$this->_App->setSetting( 'newname', 'value',  'test' );
-
-		$Value = $this->_App->getSetting( 'newname', 'test' );
-
-		$this->assertEquals(
-			'value',
-			$Value
 		);
 	}
 
