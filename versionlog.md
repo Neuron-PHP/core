@@ -1,3 +1,7 @@
+## 0.5.5 2020-08-26
+* Renamed Facades\Filter to Filters.
+* Renamed Facades\Event to EventEmitter
+
 ## 0.5.4
 
 ## 0.5.3

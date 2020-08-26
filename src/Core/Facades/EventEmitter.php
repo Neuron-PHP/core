@@ -8,10 +8,10 @@ use Neuron\Events\Emitter;
 use Neuron\Events\Broadcasters\Generic;
 
 /**
- * Class Event
+ * Class EventEmitter
  * @package Neuron\Core\Facades
  */
-class Event
+class EventEmitter
 {
 	private Emitter $_Emitter;
 
