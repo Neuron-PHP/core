@@ -1,4 +1,7 @@
 <?php
+/**
+ * Wrapper for the filter classes.
+ */
 
 namespace Neuron\Core\Facades;
 
@@ -8,6 +11,10 @@ use Neuron\Data\Filter\Post;
 use Neuron\Data\Filter\Server;
 use Neuron\Data\Filter\Session;
 
+/**
+ * Class Filter
+ * @package Neuron\Core\Facades
+ */
 class Filter
 {
 	private Get     $_Get;
