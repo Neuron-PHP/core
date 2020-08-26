@@ -1,4 +1,5 @@
-## 0.5.6
+## 0.5.6 2020-08-26
+* Removed filters facade.
 
 ## 0.5.5 2020-08-26
 * Renamed Facades\Filter to Filters.
