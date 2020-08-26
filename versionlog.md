@@ -1,3 +1,5 @@
+## 0.5.4
+
 ## 0.5.3
 * Added Facades\Event
 * Added Facades\Filter
