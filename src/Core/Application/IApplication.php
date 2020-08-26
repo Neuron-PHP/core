@@ -11,6 +11,10 @@ namespace Neuron\Core\Application;
 use Neuron\Patterns;
 use Neuron\Log;
 
+/**
+ * Interface IApplication
+ * @package Neuron\Core\Application
+ */
 interface IApplication extends Log\ILogger, Patterns\IRunnable
 {
 	public function getSetting( string $Name, string $Section = 'default' );

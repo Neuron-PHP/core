@@ -1,0 +1,11 @@
+language: php
+php:
+  - 7.4
+
+before_script: composer install
+
+script:
+  - vendor/bin/phpunit tests
+
+notifications:
+  slack: dragonflyrg:w3hYXjTOZjrmBGQuszMILN7K#opensource_notify
