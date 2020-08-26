@@ -12,10 +12,10 @@ use Neuron\Data\Filter\Server;
 use Neuron\Data\Filter\Session;
 
 /**
- * Class Filter
+ * Class Filters
  * @package Neuron\Core\Facades
  */
-class Filter
+class Filters
 {
 	private Get     $_Get;
 	private Post    $_Post;

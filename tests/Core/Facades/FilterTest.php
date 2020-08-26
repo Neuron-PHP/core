@@ -2,7 +2,7 @@
 
 namespace Facades;
 
-use Neuron\Core\Facades\Filter;
+use Neuron\Core\Facades\Filters;
 use Neuron\Data\Filter\Cookie;
 use Neuron\Data\Filter\Get;
 use Neuron\Data\Filter\Post;
@@ -12,13 +12,13 @@ use PHPUnit\Framework\TestCase;
 
 class FilterTest extends TestCase
 {
-	public Filter $Filter;
+	public Filters $Filter;
 
 	protected function setUp()
 	{
 		parent::setUp();
 
-		$this->Filter = new Filter();
+		$this->Filter = new Filters();
 	}
 
 	public function testGet()

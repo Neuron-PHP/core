@@ -2,18 +2,18 @@
 
 namespace Core\Facades;
 
-use Neuron\Core\Facades\Event;
+use Neuron\Core\Facades\EventEmitter;
 use Neuron\Events\Emitter;
 use Neuron\Events\IEvent;
 use Neuron\Events\IListener;
 use PHPUnit\Framework\TestCase;
 
-class TempEvent implements \Neuron\Events\IEvent
+class TempEvent implements IEvent
 {
 	public int $State = 1;
 }
 
-class ListenerTest implements \Neuron\Events\IListener
+class ListenerTest implements IListener
 {
 	public int $State = 0;
 
@@ -36,7 +36,7 @@ class EventTest extends TestCase
 
 	public function testEmit()
 	{
-		$Event = new Event();
+		$Event = new EventEmitter();
 
 		$Listener = new ListenerTest();
 

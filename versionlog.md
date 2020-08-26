@@ -1,4 +1,6 @@
 ## 0.5.5
+* Renamed Facades\Filter to Filters.
+* Renamed Facades\Event to EventEmitter
 
 ## 0.5.4
 
