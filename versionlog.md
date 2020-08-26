@@ -1,3 +1,5 @@
+## 0.5.7
+
 ## 0.5.6 2020-08-26
 * Removed filters facade.
 
