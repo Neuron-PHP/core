@@ -4,8 +4,8 @@
  */
 namespace Neuron\Core\Facades;
 
-use Neuron\Event\Emitter;
-use Neuron\Event\GenericBroadcaster;
+use Neuron\Events\Emitter;
+use Neuron\Events\Broadcasters\Generic;
 
 /**
  * Class Event
@@ -19,7 +19,7 @@ class Event
 	{
 		$this->_Emitter = new Emitter();
 
-		$this->_Emitter->registerBroadcaster( new GenericBroadcaster() );
+		$this->_Emitter->registerBroadcaster( new Generic() );
 	}
 
 	/**
