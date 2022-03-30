@@ -27,7 +27,7 @@ class EventTest extends TestCase
 {
 	public Emitter $Emitter;
 
-	protected function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 

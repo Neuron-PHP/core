@@ -1,4 +1,6 @@
 ## 0.5.7
+* Updated Events and Logger versions.
+* Added error and shutdown handlers.
 
 ## 0.5.6 2020-08-26
 * Removed filters facade.

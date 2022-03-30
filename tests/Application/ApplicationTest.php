@@ -3,10 +3,18 @@
 class AppMock extends \Neuron\Core\Application\Base
 {
 	public $Crash     = false;
+	public $DidCrash  = false;
+	public $Error     = false;
+	public $DidError  = true;
 	public $FailStart = false;
 
 	protected function onRun()
 	{
+		if( $this->Error )
+		{
+			$Test = $Bogus[ 'test' ];
+		}
+
 		if( $this->Crash )
 		{
 			throw new Exception( 'Mock failure.' );
@@ -23,9 +31,18 @@ class AppMock extends \Neuron\Core\Application\Base
 		return parent::onStart();
 	}
 
-	protected function onError( \Exception $exception ) : bool
+	protected function onCrash( array $Error ): void
 	{
-		parent::onError( $exception );
+		$this->DidCrash = true;
+
+		parent::onCrash( $Error );
+	}
+
+	protected function onError( string $Message ) : bool
+	{
+		$this->DidError = true;
+
+		parent::onError( $Message );
 
 		return false;
 	}
@@ -35,8 +52,10 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 {
 	private $_App;
 
-	public function setup()
+	protected function setUp(): void
 	{
+		parent::setUp();
+
 		$this->_App = new AppMock( "1.0" );
 	}
 
@@ -66,11 +85,25 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 
 	public function testOnError()
 	{
-		$this->_App->Crash = true;
+		$this->_App->setHandleErrors( true );
+		$this->_App->Error = true;
 
-		$this->assertEquals(
-			false,
-			$this->_App->run()
+		$this->_App->run();
+
+		$this->assertTrue(
+			$this->_App->DidError
+		);
+	}
+
+	public function testCrash()
+	{
+		$this->_App->setHandleFatal( true );
+
+		$this->_App->Crash = true;
+		$this->_App->run();
+
+		$this->assertTrue(
+			$this->_App->DidCrash
 		);
 	}
 
