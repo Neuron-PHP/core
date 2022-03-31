@@ -1,3 +1,5 @@
+## 0.5.8
+
 ## 0.5.7 2022-03-31
 * Updated Events and Logger versions.
 * Added error and shutdown handlers.
