@@ -4,6 +4,7 @@
  */
 namespace Neuron\Core\Facades;
 
+use Neuron\Events\Broadcasters\IBroadcaster;
 use Neuron\Events\Emitter;
 use Neuron\Events\Broadcasters\Generic;
 
@@ -15,17 +16,27 @@ class EventEmitter
 {
 	private Emitter $_Emitter;
 
+	/**
+	 *
+	 */
 	public function __construct( )
 	{
 		$this->_Emitter = new Emitter();
+	}
 
-		$this->_Emitter->registerBroadcaster( new Generic() );
+	/**
+	 * @param IBroadcaster $Broadcaster
+	 * @return void
+	 */
+	public function registerBroadcaster( IBroadcaster  $Broadcaster ) : void
+	{
+		$this->_Emitter->registerBroadcaster( $Broadcaster );
 	}
 
 	/**
 	 * @param array $Registry
 	 */
-	public function registerListeners( array $Registry )
+	public function registerListeners( array $Registry ) : void
 	{
 		$Broadcasters = $this->_Emitter->getBroadcasters();
 
@@ -44,7 +55,7 @@ class EventEmitter
 	/**
 	 * @param $Event
 	 */
-	public function emit( $Event )
+	public function emit( $Event ) : void
 	{
 		$this->_Emitter->emit( $Event );
 	}

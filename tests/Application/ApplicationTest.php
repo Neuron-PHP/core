@@ -130,14 +130,6 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 		);
 	}
 
-	public function testGetLogger()
-	{
-		$this->assertEquals(
-			get_class( $this->_App->getLogger() ),
-			\Neuron\Log\LogMux::class
-		);
-	}
-
 	public function testGetParameters()
 	{
 		$this->_App->run( [ 'test' => 'test' ] );
