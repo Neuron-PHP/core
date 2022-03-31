@@ -1,3 +1,9 @@
+## 0.5.7 2022-03-31
+* Updated Events and Logger versions.
+* Added error and shutdown handlers.
+* Added CrossCutting\Event
+* Expanded application interface to include initializers.
+
 ## 0.5.6 2020-08-26
 * Removed filters facade.
 

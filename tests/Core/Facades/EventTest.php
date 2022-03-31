@@ -3,6 +3,7 @@
 namespace Core\Facades;
 
 use Neuron\Core\Facades\EventEmitter;
+use Neuron\Events\Broadcasters\Generic;
 use Neuron\Events\Emitter;
 use Neuron\Events\IEvent;
 use Neuron\Events\IListener;
@@ -10,16 +11,14 @@ use PHPUnit\Framework\TestCase;
 
 class TempEvent implements IEvent
 {
-	public int $State = 1;
+	public int $State = 0;
 }
 
 class ListenerTest implements IListener
 {
-	public int $State = 0;
-
 	public function event( $Event )
 	{
-		$this->State = $Event->State;
+		$Event->State = 1;
 	}
 }
 
@@ -27,7 +26,7 @@ class EventTest extends TestCase
 {
 	public Emitter $Emitter;
 
-	protected function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 
@@ -36,24 +35,24 @@ class EventTest extends TestCase
 
 	public function testEmit()
 	{
-		$Event = new EventEmitter();
+		$Emitter = new EventEmitter();
 
-		$Listener = new ListenerTest();
+		$Emitter->registerBroadcaster( new Generic() );
 
-		$Event->registerListeners(
+		$Emitter->registerListeners(
 			[
 				TempEvent::class => [
-					$Listener
+					ListenerTest::class
 				]
 			]
 		);
 
-		$Event->emit( new TempEvent() );
+		$Event = new TempEvent();
+		$Emitter->emit( $Event );
 
 		$this->assertEquals(
 			1,
-			$Listener->State
+			$Event->State
 		);
-
 	}
 }
