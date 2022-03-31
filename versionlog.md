@@ -1,4 +1,4 @@
-## 0.5.7
+## 0.5.7 2022-03-31
 * Updated Events and Logger versions.
 * Added error and shutdown handlers.
 * Added CrossCutting\Event
