@@ -13,7 +13,6 @@ use Neuron\Log;
 
 /**
  * Interface IApplication
- * @package Neuron\Core\Application
  */
 interface IApplication extends Patterns\IRunnable
 {

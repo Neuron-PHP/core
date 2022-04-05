@@ -1,4 +1,5 @@
-## 0.5.8
+## 0.5.8 2022-04-04
+* Scheduled release
 
 ## 0.5.7 2022-03-31
 * Updated Events and Logger versions.

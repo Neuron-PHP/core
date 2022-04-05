@@ -1,9 +1,14 @@
 <?php
 
+
 namespace Neuron\Core\CrossCutting;
 
 use Neuron\Core\Facades\EventEmitter;
 use Neuron\Events\Broadcasters\IBroadcaster;
+
+/**
+ * Event Singleton
+ */
 
 class Event extends \Neuron\Patterns\Singleton\Memory
 {
