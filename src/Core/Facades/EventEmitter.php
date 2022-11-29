@@ -25,7 +25,7 @@ class EventEmitter
 	 * @param IBroadcaster $Broadcaster
 	 * @return void
 	 */
-	public function registerBroadcaster( IBroadcaster  $Broadcaster ) : void
+	public function registerBroadcaster( IBroadcaster $Broadcaster ) : void
 	{
 		$this->_Emitter->registerBroadcaster( $Broadcaster );
 	}
