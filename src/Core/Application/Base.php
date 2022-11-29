@@ -9,10 +9,9 @@ use Neuron\Util;
 use Neuron\Patterns\Registry;
 use Neuron\Data\Setting\Source\ISettingSource;
 use Neuron\Data\Setting\Settingmanager;
-use phpDocumentor\Reflection\Types\Mixed_;
 
 /**
- * Defines base functionality for applications.
+ * Base functionality for applications.
  */
 
 abstract class Base implements IApplication

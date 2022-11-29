@@ -1,7 +1,4 @@
 <?php
-/**
- *
- */
 namespace Neuron\Core\Facades;
 
 use Neuron\Events\Broadcasters\IBroadcaster;
@@ -9,8 +6,7 @@ use Neuron\Events\Emitter;
 use Neuron\Events\Broadcasters\Generic;
 
 /**
- * Class EventEmitter
- * @package Neuron\Core\Facades
+ * Wrapper for event functionality.
  */
 class EventEmitter
 {
@@ -25,15 +21,20 @@ class EventEmitter
 	}
 
 	/**
+	 * Registers a new broadcaster.
 	 * @param IBroadcaster $Broadcaster
 	 * @return void
 	 */
-	public function registerBroadcaster( IBroadcaster  $Broadcaster ) : void
+	public function registerBroadcaster( IBroadcaster $Broadcaster ) : void
 	{
 		$this->_Emitter->registerBroadcaster( $Broadcaster );
 	}
 
 	/**
+	 * Maps an array of events to an array of listeners.
+	 * Listeners can either be an object or a class name
+	 * to be instantiated when the event is fired.
+	 *
 	 * @param array $Registry
 	 */
 	public function registerListeners( array $Registry ) : void
@@ -53,6 +54,8 @@ class EventEmitter
 	}
 
 	/**
+	 * Emits an event across all broadcasters to all registered
+	 * listeners.
 	 * @param $Event
 	 */
 	public function emit( $Event ) : void
