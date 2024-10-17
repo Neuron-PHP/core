@@ -5,7 +5,7 @@ namespace Neuron\Core\H;
 // @codingStandardsIgnoreStart
 
 /**
- * A PHP implementation of error.h
+ * A PHP implementation of the error.h c header.
  */
 
 class Error

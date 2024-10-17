@@ -4,7 +4,7 @@ namespace Neuron\Core\Application;
 
 /**
  * Command line applications are designed to only be executed from the context
- * of the command line.
+ * of the php-cli.
  * Allows for easy addition and handling of command line parameters.
  */
 
