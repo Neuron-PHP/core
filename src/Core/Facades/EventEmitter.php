@@ -3,10 +3,9 @@ namespace Neuron\Core\Facades;
 
 use Neuron\Events\Broadcasters\IBroadcaster;
 use Neuron\Events\Emitter;
-use Neuron\Events\Broadcasters\Generic;
 
 /**
- * Wrapper for event functionality.
+ * Facade to simplify the registration of events and listeners and the emitting of events.
  */
 class EventEmitter
 {
