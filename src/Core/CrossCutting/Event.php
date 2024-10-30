@@ -25,7 +25,7 @@ class Event extends \Neuron\Patterns\Singleton\Memory
 	/**
 	 * @return void
 	 */
-	public function initIfNeeded()
+	public function initIfNeeded(): void
 	{
 		if( !$this->_Emitter )
 		{

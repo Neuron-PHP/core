@@ -1,10 +1,4 @@
 <?php
-/**
- * The goal of the IApplication interface is to provide access to basic application services:
- * - Logging
- * - Settings
- * - Registry
- */
 
 namespace Neuron\Core\Application;
 
@@ -12,7 +6,10 @@ use Neuron\Patterns;
 use Neuron\Log;
 
 /**
- * Interface IApplication
+ * Provides the runnable interface plus access to basic cross-cutting concerns:
+ * - Logging
+ * - Settings
+ * - Registry
  */
 interface IApplication extends Patterns\IRunnable
 {

@@ -72,7 +72,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param $Name
+	 * @param string $Name
 	 * @param string $Section
 	 * @return mixed
 	 */
@@ -88,7 +88,7 @@ abstract class Base implements IApplication
 	 * @param string $Section
 	 */
 
-	public function setSetting( string $Name, string $Value, string $Section = 'default' )
+	public function setSetting( string $Name, string $Value, string $Section = 'default' ): void
 	{
 		$this->_Settings->set( $Section, $Name, $Value );
 	}
@@ -97,7 +97,7 @@ abstract class Base implements IApplication
 	 * @return bool
 	 */
 
-	public function isCommandLine()
+	public function isCommandLine(): bool
 	{
 		return Util\System::isCommandLine();
 	}
@@ -135,7 +135,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param \Exception $exception
+	 * @param string $Message
 	 * @return bool
 	 * Called for any unhandled exceptions.
 	 * Returning false skips executing onFinish.
@@ -143,7 +143,7 @@ abstract class Base implements IApplication
 
 	protected function onError( string $Message ) : bool
 	{
-		$this->log( $Message, Log\ILogger::ERROR );
+		Log\Log::error( $Message );
 
 		return true;
 	}
@@ -159,14 +159,12 @@ abstract class Base implements IApplication
 	/**
 	 * @return void
 	 */
-	public function fatalHandler()
+	public function fatalHandler(): void
 	{
 		$Error = error_get_last();
 
 		if( $Error && $Error[ 'type' ] == E_ERROR )
 		{
-			$this->log( $Error[ 'message' ], Log\ILogger::FATAL );
-
 			$this->onCrash( $Error );
 		}
 	}
@@ -202,8 +200,7 @@ abstract class Base implements IApplication
 				break;
 		}
 
-		Log\Log::error( sprintf( "PHP %s:  %s in %s on line %d", $Type, $Message, $File, $Line ) );
-
+		$this->onError( sprintf( "PHP %s:  %s in %s on line %d", $Type, $Message, $File, $Line ));
 		return true;
 	}
 
@@ -245,7 +242,7 @@ abstract class Base implements IApplication
 	 * @param array $Argv
 	 * @return bool
 	 */
-	public function run( array $Argv = [] )
+	public function run( array $Argv = [] ): bool
 	{
 		$this->init();
 
@@ -282,7 +279,7 @@ abstract class Base implements IApplication
 	 * returns parameters passed to the run method.
 	 */
 
-	public function getParameters()
+	public function getParameters(): array
 	{
 		return $this->_Parameters;
 	}
@@ -298,11 +295,11 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param $object
 	 */
 
-	public function setRegistryObject( string $name, mixed $object )
+	public function setRegistryObject( string $name, mixed $object ): void
 	{
 		$this->_Registry->set( $name, $object );
 	}

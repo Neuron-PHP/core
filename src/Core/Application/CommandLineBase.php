@@ -2,7 +2,10 @@
 
 namespace Neuron\Core\Application;
 
+use Neuron\Log;
+
 /**
+ * Base functionality for command line applications.
  * Command line applications are designed to only be executed from the context
  * of the php-cli.
  * Allows for easy addition and handling of command line parameters.
@@ -16,7 +19,7 @@ abstract class CommandLineBase extends Base
 	 * @return array - accessor for the parameter array.
 	 */
 
-	protected function getHandlers()
+	protected function getHandlers(): array
 	{
 		return $this->_Handlers;
 	}
@@ -25,7 +28,7 @@ abstract class CommandLineBase extends Base
 	 * @param $sSwitch
 	 * @param $sDescription
 	 * @param $method
-	 * @param bool|false $bParam
+	 * @param bool|bool $bParam
 	 *
 	 * Adds a handler for command line parameters.
 	 * The switch is the parameter that causes the specified method to be called.
@@ -33,7 +36,7 @@ abstract class CommandLineBase extends Base
 	 * switch on the command line will be passed as the parameter to the handler.
 	 */
 
-	protected function addHandler( $sSwitch, $sDescription, $method, $bParam = false )
+	protected function addHandler( $sSwitch, $sDescription, $method, bool $bParam = false ): void
 	{
 		$this->_Handlers[ $sSwitch ] = [
 			'description'	=> $sDescription,
@@ -46,7 +49,7 @@ abstract class CommandLineBase extends Base
 	 * Processes the argv array.
 	 */
 
-	protected function processParameters()
+	protected function processParameters(): void
 	{
 		$paramcount = count( $this->getParameters() );
 
@@ -80,7 +83,7 @@ abstract class CommandLineBase extends Base
 	 * hints.
 	 */
 
-	protected function help()
+	protected function help(): void
 	{
 		echo basename( $_SERVER['PHP_SELF'], '.php' )."\n";
 		echo 'v'.$this->getVersion()."\n";
@@ -104,7 +107,7 @@ abstract class CommandLineBase extends Base
 	{
 		if( !$this->isCommandLine() )
 		{
-			$this->log( "Application must be run from the command line.", Log\ILogger::FATAL );
+			Log\Log::fatal( "Application must be run from the command line." );
 			return false;
 		}
 
