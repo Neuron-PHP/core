@@ -5,6 +5,8 @@ namespace Neuron\Core\Application;
 use Neuron\Core\CrossCutting\Event;
 use Neuron\Events\Broadcasters\Generic;
 use Neuron\Log;
+use Neuron\Log\ILogger;
+use Neuron\Log\Logger;
 use Neuron\Util;
 use Neuron\Patterns\Registry;
 use Neuron\Data\Setting\Source\ISettingSource;
@@ -16,13 +18,68 @@ use Neuron\Data\Setting\Settingmanager;
 
 abstract class Base implements IApplication
 {
-	private   ?Registry      $_Registry;
-	protected array          $_Parameters;
-	protected Settingmanager $_Settings;
-	protected string         $_Version;
+	private   ?Registry     	$_Registry;
+	protected array         	$_Parameters;
+	protected ?Settingmanager	$_Settings = null;
+	protected string       		$_Version;
 
 	protected bool $_HandleErrors = false;
 	protected bool $_HandleFatal  = false;
+
+	/**
+	 * Initial setup for the application..
+	 * @param string $Version
+	 */
+
+	public function __construct( string $Version, ?ISettingSource $Source = null )
+	{
+		$this->_Registry = Registry::getInstance();
+
+		$this->_Version = $Version;
+
+		if( $Source )
+		{
+			$this->_Settings = new SettingManager( $Source );
+		}
+	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function initLogger(): void
+	{
+		$Log = Log\Log::getInstance();
+
+		$Log->initIfNeeded();
+
+		$Log->Logger->reset();
+
+		// Create a new default logger using the destination and format
+		// specified in the settings.
+
+		$DestClass   = $this->getSetting( "destination", "logging" );
+		$FormatClass = $this->getSetting( "format", "logging" );
+
+		if( !$DestClass || !$FormatClass )
+		{
+			return;
+		}
+
+		$Destination = new $DestClass( new $FormatClass() );
+
+		$DefaultLog = new Logger( $Destination );
+
+		$FileName = $this->getSetting( "file", "logging" );
+		if( $FileName )
+			$Destination->open( [ 'file_name' => $FileName ] );
+
+		$DefaultLog->setRunLevel( $this->getSetting( "level", "logging" ) ?? (int)ILogger::DEBUG );
+
+		$Log->Logger->addLog( $DefaultLog );
+
+		$Log->serialize();
+	}
+
 
 	/**
 	 * @return bool
@@ -72,13 +129,18 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param $Name
+	 * @param string $Name
 	 * @param string $Section
 	 * @return mixed
 	 */
 
-	public function getSetting( string $Name, string $Section = 'default' )
+	public function getSetting( string $Name, string $Section = 'default' ): mixed
 	{
+		if( !$this->_Settings )
+		{
+			return null;
+		}
+
 		return $this->_Settings->get( $Section, $Name );
 	}
 
@@ -88,8 +150,13 @@ abstract class Base implements IApplication
 	 * @param string $Section
 	 */
 
-	public function setSetting( string $Name, string $Value, string $Section = 'default' )
+	public function setSetting( string $Name, string $Value, string $Section = 'default' ): void
 	{
+		if( !$this->_Settings )
+		{
+			return;
+		}
+
 		$this->_Settings->set( $Section, $Name, $Value );
 	}
 
@@ -97,21 +164,9 @@ abstract class Base implements IApplication
 	 * @return bool
 	 */
 
-	public function isCommandLine()
+	public function isCommandLine(): bool
 	{
 		return Util\System::isCommandLine();
-	}
-
-	/**
-	 * Creates and configures the default logger.
-	 * @param string $Version
-	 */
-
-	public function __construct( string $Version )
-	{
-		$this->_Registry = Registry::getInstance();
-
-		$this->_Version = $Version;
 	}
 
 	/**
@@ -135,7 +190,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param \Exception $exception
+	 * @param string $Message
 	 * @return bool
 	 * Called for any unhandled exceptions.
 	 * Returning false skips executing onFinish.
@@ -143,7 +198,7 @@ abstract class Base implements IApplication
 
 	protected function onError( string $Message ) : bool
 	{
-		$this->log( $Message, Log\ILogger::ERROR );
+		Log\Log::error( $Message );
 
 		return true;
 	}
@@ -159,14 +214,12 @@ abstract class Base implements IApplication
 	/**
 	 * @return void
 	 */
-	public function fatalHandler()
+	public function fatalHandler(): void
 	{
 		$Error = error_get_last();
 
 		if( $Error && $Error[ 'type' ] == E_ERROR )
 		{
-			$this->log( $Error[ 'message' ], Log\ILogger::FATAL );
-
 			$this->onCrash( $Error );
 		}
 	}
@@ -202,8 +255,7 @@ abstract class Base implements IApplication
 				break;
 		}
 
-		Log\Log::error( sprintf( "PHP %s:  %s in %s on line %d", $Type, $Message, $File, $Line ) );
-
+		$this->onError( sprintf( "PHP %s:  %s in %s on line %d", $Type, $Message, $File, $Line ));
 		return true;
 	}
 
@@ -226,9 +278,15 @@ abstract class Base implements IApplication
 
 	/**
 	 * @return void
+	 * @throws \Exception
 	 */
 	public function init(): void
 	{
+		if( $this->_Settings )
+		{
+			$this->initLogger();
+		}
+
 		$this->initErrorHandlers();
 		$this->initEvents();
 	}
@@ -245,7 +303,7 @@ abstract class Base implements IApplication
 	 * @param array $Argv
 	 * @return bool
 	 */
-	public function run( array $Argv = [] )
+	public function run( array $Argv = [] ): bool
 	{
 		$this->init();
 
@@ -259,6 +317,7 @@ abstract class Base implements IApplication
 
 		try
 		{
+			Log\Log::debug( "Running application v{$this->_Version}.." );
 			$this->onRun();
 		}
 		catch( \Exception $exception )
@@ -282,7 +341,7 @@ abstract class Base implements IApplication
 	 * returns parameters passed to the run method.
 	 */
 
-	public function getParameters()
+	public function getParameters(): array
 	{
 		return $this->_Parameters;
 	}
@@ -298,11 +357,11 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param $object
 	 */
 
-	public function setRegistryObject( string $name, mixed $object )
+	public function setRegistryObject( string $name, mixed $object ): void
 	{
 		$this->_Registry->set( $name, $object );
 	}
@@ -324,18 +383,22 @@ abstract class Base implements IApplication
 	{
 		if( $this->isHandleErrors() )
 		{
-			set_error_handler( [
-										 $this,
-										 'phpErrorHandler'
-									 ] );
+			set_error_handler(
+				[
+					$this,
+					'phpErrorHandler'
+				]
+			);
 		}
 
 		if( $this->isHandleFatal() )
 		{
-			register_shutdown_function( [
-													 $this,
-													 'fatalHandler'
-												 ] );
+			register_shutdown_function(
+				[
+					$this,
+					'fatalHandler'
+				]
+			);
 		}
 	}
 }
