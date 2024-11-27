@@ -1,12 +1,15 @@
 <?php
 
-class AppMock extends \Neuron\Core\Application\Base
+use Neuron\Core\Application\Base;
+use Neuron\Data\Setting\Source\Ini;
+
+class AppMock extends Base
 {
-	public $Crash     = false;
-	public $DidCrash  = false;
-	public $Error     = false;
-	public $DidError  = true;
-	public $FailStart = false;
+	public bool $Crash    = false;
+	public bool $DidCrash = false;
+	public bool $Error    = false;
+	public bool $DidError = true;
+	public bool $FailStart = false;
 
 	protected function onRun()
 	{
@@ -56,7 +59,14 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 	{
 		parent::setUp();
 
-		$this->_App = new AppMock( "1.0" );
+		$SettingSource = new Ini( 'examples/application.ini' );
+		$this->_App = new AppMock( "1.0", $SettingSource );
+	}
+
+	public function testNoConfig()
+	{
+		$App = new AppMock( "1.0" );
+		$this->assertNull( $App->getSetting( "test", "test" ) );
 	}
 
 	public function testRun()
@@ -136,5 +146,11 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 		$this->assertTrue(
 			is_array( $this->_App->getParameters() )
 		);
+	}
+
+	public function testLogging()
+	{
+		$this->_App->run();
+		$this->assertTrue( file_exists( 'examples/test.log') );
 	}
 }

@@ -5,12 +5,13 @@ namespace Neuron\Core\CrossCutting;
 
 use Neuron\Core\Facades\EventEmitter;
 use Neuron\Events\Broadcasters\IBroadcaster;
+use Neuron\Patterns\Singleton\Memory;
 
 /**
  * Event Singleton
  */
 
-class Event extends \Neuron\Patterns\Singleton\Memory
+class Event extends Memory
 {
 	private ?EventEmitter $_Emitter = null;
 

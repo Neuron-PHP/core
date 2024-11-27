@@ -1,5 +1,7 @@
 ## 0.6.3
 * Applications now use cross cutting log functionality.
+* Applications now can process configuration files.
+* Updated data component version.
 
 ## 0.6.2 2024-10-16
 * Updated logging to 0.7

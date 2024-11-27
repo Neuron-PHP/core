@@ -34,6 +34,7 @@ composer.phar
 /build/logs/*
 /build/coverage/*
 /build/pdepend/*
+/examples/test.log
 
 cache.properties
 composer.lock
