@@ -10,7 +10,7 @@ use Neuron\Log\Logger;
 use Neuron\Util;
 use Neuron\Patterns\Registry;
 use Neuron\Data\Setting\Source\ISettingSource;
-use Neuron\Data\Setting\Settingmanager;
+use Neuron\Data\Setting\SettingManager;
 
 /**
  * Base functionality for applications.
