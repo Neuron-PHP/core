@@ -1,4 +1,5 @@
-## 0.6.4
+## 0.6.4 2024-11-27
+* Fixed travis build.
 
 ## 0.6.3 2024-11-27
 * Applications now use cross cutting log functionality.
