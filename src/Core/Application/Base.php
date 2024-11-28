@@ -29,6 +29,7 @@ abstract class Base implements IApplication
 	/**
 	 * Initial setup for the application..
 	 * @param string $Version
+	 * @param ISettingSource|null $Source
 	 */
 
 	public function __construct( string $Version, ?ISettingSource $Source = null )
@@ -46,6 +47,7 @@ abstract class Base implements IApplication
 	/**
 	 * @throws \Exception
 	 */
+
 	public function initLogger(): void
 	{
 		$Log = Log\Log::getInstance();
@@ -80,10 +82,10 @@ abstract class Base implements IApplication
 		$Log->serialize();
 	}
 
-
 	/**
 	 * @return bool
 	 */
+
 	public function isHandleErrors(): bool
 	{
 		return $this->_HandleErrors;
@@ -93,6 +95,7 @@ abstract class Base implements IApplication
 	 * @param bool $HandleErrors
 	 * @return Base
 	 */
+
 	public function setHandleErrors( bool $HandleErrors ): Base
 	{
 		$this->_HandleErrors = $HandleErrors;
@@ -102,6 +105,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return bool
 	 */
+
 	public function isHandleFatal(): bool
 	{
 		return $this->_HandleFatal;
@@ -111,6 +115,7 @@ abstract class Base implements IApplication
 	 * @param bool $HandleFatal
 	 * @return Base
 	 */
+
 	public function setHandleFatal( bool $HandleFatal ): Base
 	{
 		$this->_HandleFatal = $HandleFatal;
@@ -204,8 +209,10 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * @param array $Error
 	 * @return void
 	 */
+
 	protected function onCrash( array $Error ) : void
 	{
 		Log\Log::fatal( $Error[ 'message' ] );
@@ -264,7 +271,7 @@ abstract class Base implements IApplication
 	 * Must be implemented by derived classes.
 	 */
 
-	protected abstract function onRun();
+	protected abstract function onRun() : void;
 
 	/**
 	 * @return string
@@ -280,6 +287,7 @@ abstract class Base implements IApplication
 	 * @return void
 	 * @throws \Exception
 	 */
+
 	public function init(): void
 	{
 		if( $this->_Settings )
@@ -294,6 +302,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return void
 	 */
+
 	public function initEvents(): void
 	{
 		Event::registerBroadcaster( new Generic() );
@@ -302,7 +311,9 @@ abstract class Base implements IApplication
 	/**
 	 * @param array $Argv
 	 * @return bool
+	 * @throws \Exception
 	 */
+
 	public function run( array $Argv = [] ): bool
 	{
 		$this->init();
@@ -351,14 +362,14 @@ abstract class Base implements IApplication
 	 * @return mixed
 	 */
 
-	public function getParameter( string $param )
+	public function getParameter( string $param ): mixed
 	{
 		return $this->_Parameters[ $param ];
 	}
 
 	/**
 	 * @param string $name
-	 * @param $object
+	 * @param mixed $object
 	 */
 
 	public function setRegistryObject( string $name, mixed $object ): void
@@ -367,7 +378,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @return mixed
 	 */
 
@@ -379,6 +390,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return void
 	 */
+
 	protected function initErrorHandlers(): void
 	{
 		if( $this->isHandleErrors() )

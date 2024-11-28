@@ -11,7 +11,7 @@ class AppMock extends Base
 	public bool $DidError = true;
 	public bool $FailStart = false;
 
-	protected function onRun()
+	protected function onRun() : void
 	{
 		if( $this->Error )
 		{
