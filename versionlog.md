@@ -1,4 +1,5 @@
 ## 0.6.5
+* Added a timezone setting to the application config.
 
 ## 0.6.4 2024-11-27
 * Fixed travis build.
