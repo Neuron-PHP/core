@@ -297,6 +297,7 @@ abstract class Base implements IApplication
 
 		$this->initErrorHandlers();
 		$this->initEvents();
+		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) );
 	}
 
 	/**

@@ -153,4 +153,10 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 		$this->_App->run();
 		$this->assertTrue( file_exists( 'examples/test.log') );
 	}
+
+	public function testTimeZone()
+	{
+		$this->_App->run();
+		$this->assertEquals( 'US/Central', date_default_timezone_get() );
+	}
 }
