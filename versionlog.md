@@ -1,3 +1,5 @@
+## 0.6.7
+
 ## 0.6.6 2024-12-13
 * Fixed the travis build.
 
