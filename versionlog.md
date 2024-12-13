@@ -1,5 +1,6 @@
-## 0.6.5
+## 0.6.5 2024-12-13
 * Added a timezone setting to the application config.
+* Added execution of all classes in the initializers directory.
 
 ## 0.6.4 2024-11-27
 * Fixed travis build.
