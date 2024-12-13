@@ -25,23 +25,24 @@ abstract class CommandLineBase extends Base
 	}
 
 	/**
-	 * @param $sSwitch
-	 * @param $sDescription
-	 * @param $method
-	 * @param bool|bool $bParam
+	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+	 * @param $Switch
+	 * @param $Description
+	 * @param $Method
+	 * @param bool|bool $Param
 	 *
 	 * Adds a handler for command line parameters.
 	 * The switch is the parameter that causes the specified method to be called.
-	 * If the bParam parameter is set to true, the token immediately follwing the
+	 * If the bParam parameter is set to true, the token immediately following the
 	 * switch on the command line will be passed as the parameter to the handler.
 	 */
 
-	protected function addHandler( $sSwitch, $sDescription, $method, bool $bParam = false ): void
+	protected function addHandler( $Switch, $Description, $Method, bool $Param = false ): void
 	{
-		$this->_Handlers[ $sSwitch ] = [
-			'description'	=> $sDescription,
-			'method'			=> $method,
-			'param'			=> $bParam
+		$this->_Handlers[ $Switch ] = [
+			'description'	=> $Description,
+			'method'			=> $Method,
+			'param'			=> $Param
 		];
 	}
 
@@ -51,30 +52,36 @@ abstract class CommandLineBase extends Base
 
 	protected function processParameters(): void
 	{
-		$paramcount = count( $this->getParameters() );
+		$ParamCount = count( $this->getParameters() );
 
-		for( $c = 0; $c < $paramcount; $c++ )
+		for( $c = 0; $c < $ParamCount; $c++ )
 		{
-			$sParam = $this->getParameters()[ $c ];
+			$Param = $this->getParameters()[ $c ];
 
-			foreach( $this->getHandlers() as $sSwitch => $aInfo )
+			$this->handleParameter( $Param, $c, $this->getParameters() );
+		}
+	}
+
+	private function handleParameter( string $Param, int &$Index )
+	{
+		foreach( $this->getHandlers() as $Switch => $Info )
+		{
+			if( $Switch != $Param )
 			{
-				if( $sSwitch == $sParam )
-				{
-					$Method = $aInfo[ 'method' ];
-
-					if( $aInfo[ 'param' ] )
-					{
-						$c++;
-						$param = $this->getParameters()[ $c ];
-						$this->$Method( $param );
-					}
-					else
-					{
-						$this->$Method();
-					}
-				}
+				continue;
 			}
+
+			$Method = $Info[ 'method' ];
+
+			if( $Info[ 'param' ] )
+			{
+				$Index++;
+				$Value = $this->getParameters()[ $Index ];
+				$this->$Method( $Value );
+				continue;
+			}
+
+			$this->$Method();
 		}
 	}
 

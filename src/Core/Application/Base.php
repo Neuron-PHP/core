@@ -2,6 +2,7 @@
 
 namespace Neuron\Core\Application;
 
+use Exception;
 use Neuron\Core\CrossCutting\Event;
 use Neuron\Events\Broadcasters\Generic;
 use Neuron\Log;
@@ -27,7 +28,7 @@ abstract class Base implements IApplication
 	protected bool $_HandleFatal  = false;
 
 	/**
-	 * Initial setup for the application..
+	 * Initial setup for the application.
 	 * @param string $Version
 	 * @param ISettingSource|null $Source
 	 */
@@ -45,11 +46,12 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 
 	public function initLogger(): void
 	{
+		/** @var Log\Log $Log */
 		$Log = Log\Log::getInstance();
 
 		$Log->initIfNeeded();
@@ -141,12 +143,7 @@ abstract class Base implements IApplication
 
 	public function getSetting( string $Name, string $Section = 'default' ): mixed
 	{
-		if( !$this->_Settings )
-		{
-			return null;
-		}
-
-		return $this->_Settings->get( $Section, $Name );
+		return $this->_Settings?->get( $Section, $Name );
 	}
 
 	/**
@@ -267,7 +264,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @return mixed
+	 * @return void
 	 * Must be implemented by derived classes.
 	 */
 
@@ -285,11 +282,52 @@ abstract class Base implements IApplication
 
 	/**
 	 * @return void
-	 * @throws \Exception
+	 */
+	protected function executeInitializers(): void
+	{
+		$initializersPath = __DIR__ . '/Initializers';
+
+		if( $this->getRegistryObject( 'Initializers.Path' ) )
+		{
+			$initializersPath = $this->getRegistryObject( 'Initializers.Path' );
+		}
+
+		$namespace = 'App\\Initializers\\';
+
+		if( $this->getRegistryObject( 'Initializers.Namespace' ) )
+		{
+			$namespace = $this->getRegistryObject( 'Initializers.Namespace' );
+		}
+
+		foreach( glob($initializersPath . '/*.php') as $filename )
+		{
+			require_once $filename;
+
+			$className = basename( $filename, '.php' );
+
+			$fullyQualifiedClassName = $namespace . $className;
+
+			if( class_exists( $fullyQualifiedClassName ) )
+			{
+				$initializer = new $fullyQualifiedClassName;
+
+				if( method_exists($initializer, 'run') )
+				{
+					$initializer->run();
+				}
+			}
+		}
+	}
+
+	/**
+	 * @return void
+	 * @throws Exception
 	 */
 
 	public function init(): void
 	{
+		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) );
+
 		if( $this->_Settings )
 		{
 			$this->initLogger();
@@ -297,6 +335,8 @@ abstract class Base implements IApplication
 
 		$this->initErrorHandlers();
 		$this->initEvents();
+
+		$this->executeInitializers();
 	}
 
 	/**
@@ -311,7 +351,7 @@ abstract class Base implements IApplication
 	/**
 	 * @param array $Argv
 	 * @return bool
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 
 	public function run( array $Argv = [] ): bool
@@ -331,7 +371,7 @@ abstract class Base implements IApplication
 			Log\Log::debug( "Running application v{$this->_Version}.." );
 			$this->onRun();
 		}
-		catch( \Exception $exception )
+		catch( Exception $exception )
 		{
 			$Message = get_class( $exception ).', msg: '.$exception->getMessage();
 
