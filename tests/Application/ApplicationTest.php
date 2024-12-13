@@ -2,6 +2,7 @@
 
 use Neuron\Core\Application\Base;
 use Neuron\Data\Setting\Source\Ini;
+use Neuron\Patterns\Registry;
 
 class AppMock extends Base
 {
@@ -158,5 +159,20 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 	{
 		$this->_App->run();
 		$this->assertEquals( 'US/Central', date_default_timezone_get() );
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function testInitializers()
+	{
+		$this->_App->setRegistryObject( 'Initializers.Path', 'examples/Initializers' );
+		$this->_App->setRegistryObject( 'Initializers.Namespace', 'ComponentTest\Initializers\\' );
+		$this->_App->run();
+
+		$this->assertEquals(
+			'Hello World!',
+			Registry::getInstance()->get( 'examples\Initializers\InitTest' )
+		);
 	}
 }
