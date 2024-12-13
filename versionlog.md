@@ -1,3 +1,5 @@
+## 0.6.6
+
 ## 0.6.5 2024-12-13
 * Added a timezone setting to the application config.
 * Added execution of all classes in the initializers directory.
