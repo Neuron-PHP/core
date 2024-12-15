@@ -1,3 +1,6 @@
+## 0.6.8 2024-12-15
+* Added base_path
+
 ## 0.6.7
 * Added a log in application crash.
 

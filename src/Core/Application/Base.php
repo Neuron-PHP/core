@@ -19,6 +19,7 @@ use Neuron\Data\Setting\SettingManager;
 
 abstract class Base implements IApplication
 {
+	private   string 				$_BasePath;
 	private   ?Registry     	$_Registry;
 	protected array         	$_Parameters;
 	protected ?Settingmanager	$_Settings = null;
@@ -43,6 +44,24 @@ abstract class Base implements IApplication
 		{
 			$this->_Settings = new SettingManager( $Source );
 		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBasePath(): string
+	{
+		return $this->_BasePath;
+	}
+
+	/**
+	 * @param string $BasePath
+	 * @return Base
+	 */
+	public function setBasePath( string $BasePath ): Base
+	{
+		$this->_BasePath = $BasePath;
+		return $this;
 	}
 
 	/**
