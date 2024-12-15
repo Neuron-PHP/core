@@ -1,3 +1,5 @@
+## 0.6.8
+
 ## 0.6.7
 * Added a log in application crash.
 
