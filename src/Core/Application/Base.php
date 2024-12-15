@@ -375,6 +375,8 @@ abstract class Base implements IApplication
 		{
 			$Message = get_class( $exception ).', msg: '.$exception->getMessage();
 
+			Log\Log::fatal( "Exception: $Message" );
+
 			$this->onCrash(
 					[
 						'message' => $Message

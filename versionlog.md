@@ -1,3 +1,6 @@
+## 0.6.7
+* Added a log in application crash.
+
 ## 0.6.6 2024-12-13
 * Fixed the travis build.
 
