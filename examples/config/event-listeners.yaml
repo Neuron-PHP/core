@@ -3,4 +3,3 @@ events:
     class: 'Tests\TestEvent'
     listeners:
       - 'Tests\TestListener'
-

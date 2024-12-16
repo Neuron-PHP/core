@@ -1,4 +1,5 @@
-## 0.6.9
+## 0.6.9 2024-12-16
+* Added the ability to map event listeners to events using the new event-listeners.yaml file.
 
 ## 0.6.8 2024-12-15
 * Added base_path
