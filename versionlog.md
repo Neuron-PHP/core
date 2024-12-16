@@ -1,3 +1,5 @@
+## 0.6.12
+
 ## 0.6.11 2024-12-16
 * Handling of no event-listeners.yaml present.
 
