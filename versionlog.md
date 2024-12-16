@@ -1,4 +1,5 @@
-## 0.6.11
+## 0.6.11 2024-12-16
+* Handling of no event-listeners.yaml present.
 
 ## 0.6.10
 * Fixed an issue with blank event listeners path in config.ini

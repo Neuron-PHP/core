@@ -12,6 +12,7 @@ use Neuron\Util;
 use Neuron\Patterns\Registry;
 use Neuron\Data\Setting\Source\ISettingSource;
 use Neuron\Data\Setting\SettingManager;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -399,7 +400,21 @@ abstract class Base implements IApplication
 			$File = $this->getEventListenersPath();
 		}
 
-		$Data = Yaml::parseFile( $File.'/event-listeners.yaml' );
+		if( !file_exists( $File . '/event-listeners.yaml' ) )
+		{
+			Log\Log::debug( "event-listeners.yaml not found." );
+			return;
+		}
+
+		try
+		{
+			$Data = Yaml::parseFile( $File . '/event-listeners.yaml' );
+		}
+		catch( ParseException $exception )
+		{
+			Log\Log::error( "Failed to load event listeners: ".$exception->getMessage() );
+			return;
+		}
 
 		foreach( $Data[ 'events' ] as $Event )
 		{
