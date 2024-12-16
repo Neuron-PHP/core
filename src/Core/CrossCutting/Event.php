@@ -55,6 +55,14 @@ class Event extends Memory
 		$Emitter->getEmitter()->registerListeners( $Registry );
 	}
 
+	public static function registerListener( string $EventName, string $Listener ) : void
+	{
+		$Emitter = self::getInstance();
+		$Emitter->initIfNeeded();
+
+		$Emitter->getEmitter()->registerListener( $EventName, $Listener );
+	}
+
 	/**
 	 * @param $Event
 	 * @return void
@@ -66,4 +74,6 @@ class Event extends Memory
 
 		$Emitter->getEmitter()->emit( $Event );
 	}
+
+
 }

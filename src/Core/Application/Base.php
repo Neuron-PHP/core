@@ -12,6 +12,7 @@ use Neuron\Util;
 use Neuron\Patterns\Registry;
 use Neuron\Data\Setting\Source\ISettingSource;
 use Neuron\Data\Setting\SettingManager;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Base functionality for applications.
@@ -19,14 +20,14 @@ use Neuron\Data\Setting\SettingManager;
 
 abstract class Base implements IApplication
 {
-	private   string 				$_BasePath;
-	private   ?Registry     	$_Registry;
-	protected array         	$_Parameters;
-	protected ?Settingmanager	$_Settings = null;
-	protected string       		$_Version;
-
-	protected bool $_HandleErrors = false;
-	protected bool $_HandleFatal  = false;
+	private		string				$_BasePath;
+	private		string				$_EventListenersPath;
+	private		?Registry			$_Registry;
+	protected	array					$_Parameters;
+	protected	?Settingmanager	$_Settings = null;
+	protected	string       		$_Version;
+	protected	bool 					$_HandleErrors = false;
+	protected	bool					$_HandleFatal  = false;
 
 	/**
 	 * Initial setup for the application.
@@ -36,14 +37,37 @@ abstract class Base implements IApplication
 
 	public function __construct( string $Version, ?ISettingSource $Source = null )
 	{
+		$this->_BasePath = '.';
+
 		$this->_Registry = Registry::getInstance();
 
 		$this->_Version = $Version;
 
-		if( $Source )
+		if( !$Source )
 		{
-			$this->_Settings = new SettingManager( $Source );
+			return;
 		}
+
+		$this->_Settings = new SettingManager( $Source );
+		$this->_EventListenersPath = $this->getSetting( 'event_listeners', 'paths' );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEventListenersPath(): string
+	{
+		return $this->_EventListenersPath;
+	}
+
+	/**
+	 * @param string $EventListenersPath
+	 * @return Base
+	 */
+	public function setEventListenersPath( string $EventListenersPath ): Base
+	{
+		$this->_EventListenersPath = $EventListenersPath;
+		return $this;
 	}
 
 	/**
@@ -365,6 +389,25 @@ abstract class Base implements IApplication
 	public function initEvents(): void
 	{
 		Event::registerBroadcaster( new Generic() );
+
+		$cwd = getcwd();
+
+		$File = $this->getBasePath().'/config';
+
+		if( $this->getEventListenersPath() )
+		{
+			$File = $this->getEventListenersPath();
+		}
+
+		$Data = Yaml::parseFile( $File.'/event-listeners.yaml' );
+
+		foreach( $Data[ 'events' ] as $Event )
+		{
+			foreach( $Event[ 'listeners' ] as $Listener )
+			{
+				Event::registerListener( $Event[ 'class' ], $Listener );
+			}
+		}
 	}
 
 	/**
