@@ -1,3 +1,6 @@
+## 0.6.10
+* Fixed an issue with blank event listeners path in config.ini
+
 ## 0.6.9 2024-12-16
 * Added the ability to map event listeners to events using the new event-listeners.yaml file.
 
