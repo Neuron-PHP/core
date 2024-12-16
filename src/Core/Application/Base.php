@@ -49,7 +49,7 @@ abstract class Base implements IApplication
 		}
 
 		$this->_Settings = new SettingManager( $Source );
-		$this->_EventListenersPath = $this->getSetting( 'event_listeners', 'paths' );
+		$this->_EventListenersPath = $this->getSetting( 'event_listeners', 'paths' ) ?? '';
 	}
 
 	/**
