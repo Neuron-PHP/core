@@ -16,7 +16,8 @@
         "neuron-php/logging": "0.7.*",
         "neuron-php/data": "0.6.*",
         "neuron-php/util": "0.6.*",
-        "neuron-php/events": "0.6.*"
+        "neuron-php/events": "^0.6.2",
+        "symfony/yaml": "^6.4"
     },
     "require-dev": {
         "phpunit/phpunit": "9.*",
@@ -24,12 +25,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Neuron\\": "src/"
+            "Neuron\\": "src/",
+            "Tests\\": "tests/",
+            "ComponentTest\\": "examples/"
         }
-    },
-  "autoload-dev": {
-    "psr-4": {
-      "ComponentTest\\": "examples/"
     }
-  }
 }

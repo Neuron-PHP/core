@@ -1,0 +1,6 @@
+events:
+  testEvent:
+    class: 'Tests\TestEvent'
+    listeners:
+      - 'Tests\TestListener'
+

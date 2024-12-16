@@ -1,58 +1,13 @@
 <?php
+namespace Tests\Application;
 
-use Neuron\Core\Application\Base;
+use Exception;
 use Neuron\Data\Setting\Source\Ini;
 use Neuron\Patterns\Registry;
+use Tests\AppMock;
+use Tests\TestListener;
 
-class AppMock extends Base
-{
-	public bool $Crash    = false;
-	public bool $DidCrash = false;
-	public bool $Error    = false;
-	public bool $DidError = true;
-	public bool $FailStart = false;
-
-	protected function onRun() : void
-	{
-		if( $this->Error )
-		{
-			$Test = $Bogus[ 'test' ];
-		}
-
-		if( $this->Crash )
-		{
-			throw new Exception( 'Mock failure.' );
-		}
-	}
-
-	protected function onStart() : bool
-	{
-		if( $this->FailStart )
-		{
-			return false;
-		}
-
-		return parent::onStart();
-	}
-
-	protected function onCrash( array $Error ): void
-	{
-		$this->DidCrash = true;
-
-		parent::onCrash( $Error );
-	}
-
-	protected function onError( string $Message ) : bool
-	{
-		$this->DidError = true;
-
-		parent::onError( $Message );
-
-		return false;
-	}
-}
-
-class ApplicationTest extends PHPUnit\Framework\TestCase
+class ApplicationTest extends \PHPUnit\Framework\TestCase
 {
 	private $_App;
 
@@ -60,7 +15,7 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 	{
 		parent::setUp();
 
-		$SettingSource = new Ini( 'examples/application.ini' );
+		$SettingSource = new Ini( 'examples/config/application.ini' );
 		$this->_App = new AppMock( "1.0", $SettingSource );
 	}
 
@@ -173,6 +128,17 @@ class ApplicationTest extends PHPUnit\Framework\TestCase
 		$this->assertEquals(
 			'Hello World!',
 			Registry::getInstance()->get( 'examples\Initializers\InitTest' )
+		);
+	}
+
+	public function testEventListeners()
+	{
+		$State = TestListener::$Count;
+		$this->_App->run();
+
+		$this->assertEquals(
+			$State + 1,
+			TestListener::$Count
 		);
 	}
 }

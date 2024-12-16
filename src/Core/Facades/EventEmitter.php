@@ -53,6 +53,21 @@ class EventEmitter
 	}
 
 	/**
+	 * Registers a listener to an event.
+	 * @param string $EventName
+	 * @param string $Listener
+	 */
+	public function registerListener( string $EventName, string $Listener ) : void
+	{
+		$Broadcasters = $this->_Emitter->getBroadcasters();
+
+		foreach( $Broadcasters as $Broadcaster )
+		{
+			$Broadcaster->addListener( $EventName, $Listener );
+		}
+	}
+
+	/**
 	 * Emits an event across all broadcasters to all registered
 	 * listeners.
 	 * @param $Event
