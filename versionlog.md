@@ -1,3 +1,5 @@
+## 0.6.11
+
 ## 0.6.10
 * Fixed an issue with blank event listeners path in config.ini
 
