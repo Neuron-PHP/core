@@ -1,3 +1,6 @@
+## 0.6.12 2024-12-17
+* Added base_path to the log path.
+
 ## 0.6.11 2024-12-16
 * Handling of no event-listeners.yaml present.
 
