@@ -49,7 +49,15 @@ abstract class Base implements IApplication
 			return;
 		}
 
-		$this->_Settings = new SettingManager( $Source );
+		try
+		{
+			$this->_Settings = new SettingManager( $Source );
+		}
+		catch( Exception $exception )
+		{
+			Log\Log::error( "Failed to load settings: ".$exception->getMessage() );
+		}
+
 		$this->_EventListenersPath = $this->getSetting( 'event_listeners', 'paths' ) ?? '';
 	}
 
@@ -119,7 +127,13 @@ abstract class Base implements IApplication
 
 		$FileName = $this->getSetting( "file", "logging" );
 		if( $FileName )
-			$Destination->open( [ 'file_name' => $FileName ] );
+		{
+			$Destination->open(
+				[
+					'file_name' => $this->getBasePath().'/'.$FileName
+				]
+			);
+		}
 
 		$DefaultLog->setRunLevel( $this->getSetting( "level", "logging" ) ?? (int)ILogger::DEBUG );
 
@@ -390,8 +404,6 @@ abstract class Base implements IApplication
 	public function initEvents(): void
 	{
 		Event::registerBroadcaster( new Generic() );
-
-		$cwd = getcwd();
 
 		$File = $this->getBasePath().'/config';
 

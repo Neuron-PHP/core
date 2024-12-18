@@ -142,3 +142,4 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 		);
 	}
 }
+
