@@ -1,3 +1,6 @@
+## 0.6.13 2024-12-18
+* Updated the setting for event listeners.'
+
 ## 0.6.12 2024-12-17
 * Added base_path to the log path.
 

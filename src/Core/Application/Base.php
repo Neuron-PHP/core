@@ -58,7 +58,7 @@ abstract class Base implements IApplication
 			Log\Log::error( "Failed to load settings: ".$exception->getMessage() );
 		}
 
-		$this->_EventListenersPath = $this->getSetting( 'event_listeners', 'paths' ) ?? '';
+		$this->_EventListenersPath = $this->getSetting( 'listeners_path', 'events' ) ?? '';
 	}
 
 	/**
@@ -343,7 +343,7 @@ abstract class Base implements IApplication
 	 */
 	protected function executeInitializers(): void
 	{
-		$initializersPath = __DIR__ . '/Initializers';
+		$initializersPath = $this->getBasePath() . '/App/Initializers';
 
 		if( $this->getRegistryObject( 'Initializers.Path' ) )
 		{
