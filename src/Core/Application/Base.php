@@ -2,16 +2,16 @@
 
 namespace Neuron\Core\Application;
 
+use Neuron\Data\Setting\SettingManager;
+use Neuron\Data\Setting\Source\ISettingSource;
 use Exception;
 use Neuron\Core\CrossCutting\Event;
 use Neuron\Events\Broadcasters\Generic;
 use Neuron\Log;
 use Neuron\Log\ILogger;
 use Neuron\Log\Logger;
-use Neuron\Util;
 use Neuron\Patterns\Registry;
-use Neuron\Data\Setting\Source\ISettingSource;
-use Neuron\Data\Setting\SettingManager;
+use Neuron\Util;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -343,7 +343,7 @@ abstract class Base implements IApplication
 	 */
 	protected function executeInitializers(): void
 	{
-		$initializersPath = $this->getBasePath() . '/App/Initializers';
+		$initializersPath = $this->getBasePath() . '/app/Initializers';
 
 		if( $this->getRegistryObject( 'Initializers.Path' ) )
 		{
