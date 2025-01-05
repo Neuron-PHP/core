@@ -1,4 +1,5 @@
-## 0.6.15
+## 0.6.15 2024-01-05
+* Moved base path to core.
 
 ## 0.6.14 2024-12-24
 * Fixed a case sensitivity issue in initializers.
