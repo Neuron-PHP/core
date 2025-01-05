@@ -1,3 +1,6 @@
+## 0.6.17
+* Added an exit after help.
+
 ## 0.6.16
 * Added description to help.
 
