@@ -16,6 +16,12 @@ abstract class CommandLineBase extends Base
 	private array $_Handlers;
 
 	/**
+	 * Get the description of the application for --help.
+	 * @return string
+	 */
+	protected abstract function getDescription(): string;
+
+	/**
 	 * @return array - accessor for the parameter array.
 	 */
 
@@ -94,6 +100,7 @@ abstract class CommandLineBase extends Base
 	{
 		echo basename( $_SERVER['PHP_SELF'], '.php' )."\n";
 		echo 'v'.$this->getVersion()."\n";
+		echo $this->getDescription()."\n\nq";
 		echo "Switches:\n";
 		$aHandlers = $this->getHandlers();
 		ksort( $aHandlers );

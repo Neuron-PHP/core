@@ -1,3 +1,6 @@
+## 0.6.16
+* Added description to help.
+
 ## 0.6.15 2024-01-05
 * Moved base path to core.
 
