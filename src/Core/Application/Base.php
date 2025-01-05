@@ -58,6 +58,9 @@ abstract class Base implements IApplication
 			Log\Log::error( "Failed to load settings: ".$exception->getMessage() );
 		}
 
+		$BasePath = $this->getSetting( 'base_path', 'system' ) ?? '.';
+		$this->setBasePath( $BasePath );
+
 		$this->_EventListenersPath = $this->getSetting( 'listeners_path', 'events' ) ?? '';
 	}
 
