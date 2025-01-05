@@ -100,7 +100,7 @@ abstract class CommandLineBase extends Base
 	{
 		echo basename( $_SERVER['PHP_SELF'], '.php' )."\n";
 		echo 'v'.$this->getVersion()."\n";
-		echo $this->getDescription()."\n\nq";
+		echo $this->getDescription()."\n\n";
 		echo "Switches:\n";
 		$aHandlers = $this->getHandlers();
 		ksort( $aHandlers );
@@ -109,6 +109,8 @@ abstract class CommandLineBase extends Base
 		{
 			echo str_pad( $sSwitch, 20 )."$aInfo[description]\n";
 		}
+
+		exit( 0 );
 	}
 
 	/**
