@@ -1,4 +1,5 @@
-## 0.6.18
+## 0.6.18 2025-01-09
+* Refactored the application base.
 
 ## 0.6.17
 * Added an exit after help.

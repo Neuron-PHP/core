@@ -5,15 +5,11 @@ namespace Neuron\Core\Application;
 use Neuron\Data\Setting\SettingManager;
 use Neuron\Data\Setting\Source\ISettingSource;
 use Exception;
-use Neuron\Core\CrossCutting\Event;
-use Neuron\Events\Broadcasters\Generic;
 use Neuron\Log;
 use Neuron\Log\ILogger;
 use Neuron\Log\Logger;
 use Neuron\Patterns\Registry;
 use Neuron\Util;
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Base functionality for applications.
@@ -21,14 +17,15 @@ use Symfony\Component\Yaml\Yaml;
 
 abstract class Base implements IApplication
 {
-	private		string				$_BasePath;
-	private		string				$_EventListenersPath;
-	private		?Registry			$_Registry;
-	protected	array					$_Parameters;
-	protected	?Settingmanager	$_Settings = null;
-	protected	string       		$_Version;
-	protected	bool 					$_HandleErrors = false;
-	protected	bool					$_HandleFatal  = false;
+	private		string         $_BasePath;
+	private		string         $_EventListenersPath;
+	private		?Registry      $_Registry;
+	protected	array           $_Parameters;
+	protected	?Settingmanager $_Settings = null;
+	protected	string          $_Version;
+	protected	bool            $_HandleErrors = false;
+	protected	bool            $_HandleFatal  = false;
+	private EventLoader         $eventLoader;
 
 	/**
 	 * Initial setup for the application.
@@ -62,6 +59,8 @@ abstract class Base implements IApplication
 		$this->setBasePath( $BasePath );
 
 		$this->_EventListenersPath = $this->getSetting( 'listeners_path', 'events' ) ?? '';
+		$this->initializerRunner   = new InitializerRunner( $this );
+		$this->eventLoader         = new EventLoader( $this );
 	}
 
 	/**
@@ -103,7 +102,6 @@ abstract class Base implements IApplication
 	/**
 	 * @throws Exception
 	 */
-
 	public function initLogger(): void
 	{
 		/** @var Log\Log $Log */
@@ -148,7 +146,6 @@ abstract class Base implements IApplication
 	/**
 	 * @return bool
 	 */
-
 	public function isHandleErrors(): bool
 	{
 		return $this->_HandleErrors;
@@ -158,7 +155,6 @@ abstract class Base implements IApplication
 	 * @param bool $HandleErrors
 	 * @return Base
 	 */
-
 	public function setHandleErrors( bool $HandleErrors ): Base
 	{
 		$this->_HandleErrors = $HandleErrors;
@@ -168,7 +164,6 @@ abstract class Base implements IApplication
 	/**
 	 * @return bool
 	 */
-
 	public function isHandleFatal(): bool
 	{
 		return $this->_HandleFatal;
@@ -178,7 +173,6 @@ abstract class Base implements IApplication
 	 * @param bool $HandleFatal
 	 * @return Base
 	 */
-
 	public function setHandleFatal( bool $HandleFatal ): Base
 	{
 		$this->_HandleFatal = $HandleFatal;
@@ -189,7 +183,6 @@ abstract class Base implements IApplication
 	 * @param ISettingSource $Source
 	 * @return $this
 	 */
-
 	public function setSettingSource( ISettingSource $Source ) : Base
 	{
 		$this->_Settings = new SettingManager( $Source );
@@ -201,7 +194,6 @@ abstract class Base implements IApplication
 	 * @param string $Section
 	 * @return mixed
 	 */
-
 	public function getSetting( string $Name, string $Section = 'default' ): mixed
 	{
 		return $this->_Settings?->get( $Section, $Name );
@@ -212,7 +204,6 @@ abstract class Base implements IApplication
 	 * @param string $Value
 	 * @param string $Section
 	 */
-
 	public function setSetting( string $Name, string $Value, string $Section = 'default' ): void
 	{
 		if( !$this->_Settings )
@@ -224,30 +215,39 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Returns true if the application is running in command line mode.
 	 * @return bool
 	 */
-
 	public function isCommandLine(): bool
 	{
 		return Util\System::isCommandLine();
 	}
 
 	/**
-	 * @return bool
-	 *
 	 * Called before onRun. If false is returned, application terminates
-	 * without executing onRun.
+	 * * without executing onRun.
+	 * @return bool
 	 */
-
 	protected function onStart() : bool
 	{
+		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) );
+
+		if( $this->_Settings )
+		{
+			$this->initLogger();
+		}
+
+		$this->initErrorHandlers();
+		$this->initEvents();
+
+		$this->executeInitializers();
+
 		return true;
 	}
 
 	/**
 	 * Called immediately after onRun.
 	 */
-
 	protected function onFinish()
 	{
 	}
@@ -258,7 +258,6 @@ abstract class Base implements IApplication
 	 * Called for any unhandled exceptions.
 	 * Returning false skips executing onFinish.
 	 */
-
 	protected function onError( string $Message ) : bool
 	{
 		Log\Log::error( $Message );
@@ -270,7 +269,6 @@ abstract class Base implements IApplication
 	 * @param array $Error
 	 * @return void
 	 */
-
 	protected function onCrash( array $Error ) : void
 	{
 		Log\Log::fatal( $Error[ 'message' ] );
@@ -325,17 +323,15 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @return void
 	 * Must be implemented by derived classes.
+	 * @return void
 	 */
-
 	protected abstract function onRun() : void;
 
 	/**
-	 * @return string
 	 * Application version number.
+	 * @return string
 	 */
-
 	public function getVersion() : string
 	{
 		return $this->_Version;
@@ -346,110 +342,26 @@ abstract class Base implements IApplication
 	 */
 	protected function executeInitializers(): void
 	{
-		$initializersPath = $this->getBasePath() . '/app/Initializers';
-
-		if( $this->getRegistryObject( 'Initializers.Path' ) )
-		{
-			$initializersPath = $this->getRegistryObject( 'Initializers.Path' );
-		}
-
-		$namespace = 'App\\Initializers\\';
-
-		if( $this->getRegistryObject( 'Initializers.Namespace' ) )
-		{
-			$namespace = $this->getRegistryObject( 'Initializers.Namespace' );
-		}
-
-		foreach( glob($initializersPath . '/*.php') as $filename )
-		{
-			require_once $filename;
-
-			$className = basename( $filename, '.php' );
-
-			$fullyQualifiedClassName = $namespace . $className;
-
-			if( class_exists( $fullyQualifiedClassName ) )
-			{
-				$initializer = new $fullyQualifiedClassName;
-
-				if( method_exists($initializer, 'run') )
-				{
-					$initializer->run();
-				}
-			}
-		}
-	}
-
-	/**
-	 * @return void
-	 * @throws Exception
-	 */
-
-	public function init(): void
-	{
-		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) );
-
-		if( $this->_Settings )
-		{
-			$this->initLogger();
-		}
-
-		$this->initErrorHandlers();
-		$this->initEvents();
-
-		$this->executeInitializers();
+		$Initializer = new InitializerRunner( $this );
+		$Initializer->execute();
 	}
 
 	/**
 	 * @return void
 	 */
-
 	public function initEvents(): void
 	{
-		Event::registerBroadcaster( new Generic() );
-
-		$File = $this->getBasePath().'/config';
-
-		if( $this->getEventListenersPath() )
-		{
-			$File = $this->getEventListenersPath();
-		}
-
-		if( !file_exists( $File . '/event-listeners.yaml' ) )
-		{
-			Log\Log::debug( "event-listeners.yaml not found." );
-			return;
-		}
-
-		try
-		{
-			$Data = Yaml::parseFile( $File . '/event-listeners.yaml' );
-		}
-		catch( ParseException $exception )
-		{
-			Log\Log::error( "Failed to load event listeners: ".$exception->getMessage() );
-			return;
-		}
-
-		foreach( $Data[ 'events' ] as $Event )
-		{
-			foreach( $Event[ 'listeners' ] as $Listener )
-			{
-				Event::registerListener( $Event[ 'class' ], $Listener );
-			}
-		}
+		$this->eventLoader->initEvents();
 	}
 
 	/**
+	 * Call to run the application.
 	 * @param array $Argv
 	 * @return bool
 	 * @throws Exception
 	 */
-
 	public function run( array $Argv = [] ): bool
 	{
-		$this->init();
-
 		$this->_Parameters = $Argv;
 
 		if( !$this->onStart() )
@@ -481,11 +393,9 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @return array
-	 *
 	 * returns parameters passed to the run method.
+	 * @return array
 	 */
-
 	public function getParameters(): array
 	{
 		return $this->_Parameters;
@@ -495,7 +405,6 @@ abstract class Base implements IApplication
 	 * @param string $param
 	 * @return mixed
 	 */
-
 	public function getParameter( string $param ): mixed
 	{
 		return $this->_Parameters[ $param ];
@@ -505,7 +414,6 @@ abstract class Base implements IApplication
 	 * @param string $name
 	 * @param mixed $object
 	 */
-
 	public function setRegistryObject( string $name, mixed $object ): void
 	{
 		$this->_Registry->set( $name, $object );
@@ -515,7 +423,6 @@ abstract class Base implements IApplication
 	 * @param string $name
 	 * @return mixed
 	 */
-
 	public function getRegistryObject( string $name ) : mixed
 	{
 		return $this->_Registry->get( $name );
@@ -524,7 +431,6 @@ abstract class Base implements IApplication
 	/**
 	 * @return void
 	 */
-
 	protected function initErrorHandlers(): void
 	{
 		if( $this->isHandleErrors() )
