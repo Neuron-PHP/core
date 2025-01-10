@@ -1,4 +1,5 @@
 ## 0.6.21
+* Refactored application base.
 
 ## 0.6.20 2024-01-10
 * Added the CommandLineBase test.

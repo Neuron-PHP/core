@@ -22,6 +22,7 @@ class EventLoader
 	 */
 	public function initEvents(): void
 	{
+		Log\Log::debug( "Loading event listeners." );
 		Event::registerBroadcaster( new Generic() );
 
 		$Path = $this->getPath();
