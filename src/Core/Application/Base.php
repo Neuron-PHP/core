@@ -30,6 +30,7 @@ abstract class Base implements IApplication
 	 * Initial setup for the application.
 	 * @param string $Version
 	 * @param ISettingSource|null $Source
+	 * @throws Exception
 	 */
 
 	public function __construct( string $Version, ?ISettingSource $Source = null )
@@ -54,11 +55,15 @@ abstract class Base implements IApplication
 			Log\Log::error( "Failed to load settings: ".$exception->getMessage() );
 		}
 
+		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) ?? 'UTC' );
+
 		$BasePath = $this->getSetting( 'base_path', 'system' ) ?? '.';
 		$this->setBasePath( $BasePath );
 
 		$this->_EventListenersPath = $this->getSetting( 'listeners_path', 'events' ) ?? '';
-		$this->initializerRunner   = new InitializerRunner( $this );
+
+		$this->initLogger();
+		$this->initErrorHandlers();
 	}
 
 	/**
@@ -228,18 +233,15 @@ abstract class Base implements IApplication
 	 */
 	protected function onStart() : bool
 	{
-		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) ?? 'UTC' );
+		Log\Log::debug( "onStart()" );
 
-		if( $this->_Settings )
+		if( !$this->_Settings )
 		{
-			$this->initLogger();
+			return true;
 		}
 
-		$this->initErrorHandlers();
 		$this->initEvents();
-
 		$this->executeInitializers();
-
 		return true;
 	}
 
@@ -248,6 +250,7 @@ abstract class Base implements IApplication
 	 */
 	protected function onFinish()
 	{
+		Log\Log::debug( "onFinish()" );
 	}
 
 	/**
@@ -258,7 +261,7 @@ abstract class Base implements IApplication
 	 */
 	protected function onError( string $Message ) : bool
 	{
-		Log\Log::error( $Message );
+		Log\Log::error( "onError(): $Message" );
 
 		return true;
 	}
@@ -269,7 +272,7 @@ abstract class Base implements IApplication
 	 */
 	protected function onCrash( array $Error ) : void
 	{
-		Log\Log::fatal( $Error[ 'message' ] );
+		Log\Log::fatal( "onCrash(): ".$Error[ 'message' ] );
 	}
 
 	/**
@@ -277,6 +280,8 @@ abstract class Base implements IApplication
 	 */
 	public function fatalHandler(): void
 	{
+		Log\Log::debug( "fatalHandler()" );
+
 		$Error = error_get_last();
 
 		if( $Error && $Error[ 'type' ] == E_ERROR )
@@ -340,6 +345,7 @@ abstract class Base implements IApplication
 	 */
 	protected function executeInitializers(): void
 	{
+		Log\Log::debug( "executeInitializers()" );
 		$Initializer = new InitializerRunner( $this );
 		$Initializer->execute();
 	}
@@ -349,10 +355,7 @@ abstract class Base implements IApplication
 	 */
 	public function initEvents(): void
 	{
-		if( !$this->_Settings )
-		{
-			return;
-		}
+		Log\Log::debug( "initEvents()" );
 
 		$EventLoader = new EventLoader( $this );
 		$EventLoader->initEvents();
@@ -386,10 +389,10 @@ abstract class Base implements IApplication
 			Log\Log::fatal( "Exception: $Message" );
 
 			$this->onCrash(
-					[
-						'message' => $Message
-					]
-				);
+				[
+					'message' => $Message
+				]
+			);
 		}
 
 		$this->onFinish();
