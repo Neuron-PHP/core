@@ -1,7 +1,8 @@
-## 0.6.20
+## 0.6.20 2024-01-10
+* Added the CommandLineBase test.
+* Added the ability to for switch commands to gracefully halt execution by returning false.
 
 ## 0.6.19
-
 ## 0.6.18 2025-01-09
 * Refactored the application base.
 
