@@ -1,3 +1,5 @@
+## 0.6.21
+
 ## 0.6.20 2024-01-10
 * Added the CommandLineBase test.
 * Added the ability to for switch commands to gracefully halt execution by returning false.
