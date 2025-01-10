@@ -25,7 +25,6 @@ abstract class Base implements IApplication
 	protected	string          $_Version;
 	protected	bool            $_HandleErrors = false;
 	protected	bool            $_HandleFatal  = false;
-	private EventLoader         $eventLoader;
 
 	/**
 	 * Initial setup for the application.
@@ -60,7 +59,6 @@ abstract class Base implements IApplication
 
 		$this->_EventListenersPath = $this->getSetting( 'listeners_path', 'events' ) ?? '';
 		$this->initializerRunner   = new InitializerRunner( $this );
-		$this->eventLoader         = new EventLoader( $this );
 	}
 
 	/**
@@ -230,7 +228,7 @@ abstract class Base implements IApplication
 	 */
 	protected function onStart() : bool
 	{
-		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) );
+		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) ?? 'UTC' );
 
 		if( $this->_Settings )
 		{
@@ -351,7 +349,13 @@ abstract class Base implements IApplication
 	 */
 	public function initEvents(): void
 	{
-		$this->eventLoader->initEvents();
+		if( !$this->_Settings )
+		{
+			return;
+		}
+
+		$EventLoader = new EventLoader( $this );
+		$EventLoader->initEvents();
 	}
 
 	/**

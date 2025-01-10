@@ -24,26 +24,24 @@ abstract class CommandLineBase extends Base
 	/**
 	 * @return array - accessor for the parameter array.
 	 */
-
 	protected function getHandlers(): array
 	{
 		return $this->_Handlers;
 	}
 
 	/**
-	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
-	 * @param $Switch
-	 * @param $Description
-	 * @param $Method
-	 * @param bool|bool $Param
-	 *
 	 * Adds a handler for command line parameters.
 	 * The switch is the parameter that causes the specified method to be called.
-	 * If the bParam parameter is set to true, the token immediately following the
+	 * If the Param parameter is set to true, the token immediately following the
 	 * switch on the command line will be passed as the parameter to the handler.
+	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+	 *
+	 * @param string $Switch the name of the switch.
+	 * @param string $Description the description of the switch.
+	 * @param string $Method the name of the switch handler method.
+	 * @param bool|bool $Param if true, the next parameter will be passed to the handler as the value of the switch.
 	 */
-
-	protected function addHandler( $Switch, $Description, $Method, bool $Param = false ): void
+	protected function addHandler( string $Switch, string $Description, string $Method, bool $Param = false ): void
 	{
 		$this->_Handlers[ $Switch ] = [
 			'description'	=> $Description,
@@ -54,9 +52,9 @@ abstract class CommandLineBase extends Base
 
 	/**
 	 * Processes the argv array.
+	 * @return bool returns false if the execution should be halted.
 	 */
-
-	protected function processParameters(): void
+	protected function processParameters(): bool
 	{
 		$ParamCount = count( $this->getParameters() );
 
@@ -64,11 +62,21 @@ abstract class CommandLineBase extends Base
 		{
 			$Param = $this->getParameters()[ $c ];
 
-			$this->handleParameter( $Param, $c, $this->getParameters() );
+			if( !$this->handleParameter( $Param, $c, $this->getParameters() ) )
+			{
+				return false;
+			}
 		}
+
+		return true;
 	}
 
-	private function handleParameter( string $Param, int &$Index )
+	/**
+	 * @param string $Param
+	 * @param int $Index
+	 * @return bool returns false if the execution should be halted.
+	 */
+	private function handleParameter( string $Param, int &$Index ): bool
 	{
 		foreach( $this->getHandlers() as $Switch => $Info )
 		{
@@ -83,34 +91,51 @@ abstract class CommandLineBase extends Base
 			{
 				$Index++;
 				$Value = $this->getParameters()[ $Index ];
-				$this->$Method( $Value );
+				if( !$this->$Method( $Value ) )
+				{
+					return false;
+				}
+
 				continue;
 			}
 
-			$this->$Method();
+			return $this->$Method();
 		}
+
+		return true;
 	}
 
 	/**
 	 * Activated by the --help parameter. Shows all configured switches and their
 	 * hints.
 	 */
-
-	protected function help(): void
+	protected function help(): bool
 	{
 		echo basename( $_SERVER['PHP_SELF'], '.php' )."\n";
 		echo 'v'.$this->getVersion()."\n";
 		echo $this->getDescription()."\n\n";
 		echo "Switches:\n";
-		$aHandlers = $this->getHandlers();
-		ksort( $aHandlers );
+		$Handlers = $this->getHandlers();
+		ksort( $Handlers );
 
-		foreach( $aHandlers as $sSwitch => $aInfo )
+		echo str_pad( 'Switch', 15 )."Value\n";
+		echo str_pad( '------', 15 )."-----\n";
+
+		foreach( $Handlers as $Switch => $Info )
 		{
-			echo str_pad( $sSwitch, 20 )."$aInfo[description]\n";
+			if( $Info[ 'param' ] )
+			{
+				$Value = str_pad( 'true', 5 );
+			}
+			else
+			{
+				$Value = str_pad( ' ', 5 );
+			}
+
+			echo str_pad( $Switch, 15 ).$Value."$Info[description]\n";
 		}
 
-		exit( 0 );
+		return false;
 	}
 
 	/**
@@ -118,7 +143,6 @@ abstract class CommandLineBase extends Base
 	 *
 	 * @return bool
 	 */
-
 	protected function onStart() : bool
 	{
 		if( !$this->isCommandLine() )
@@ -129,7 +153,10 @@ abstract class CommandLineBase extends Base
 
 		$this->addHandler( '--help', 'Help', 'help' );
 
-		$this->processParameters();
+		if( !$this->processParameters() )
+		{
+			return false;
+		}
 
 		return parent::onStart();
 	}
