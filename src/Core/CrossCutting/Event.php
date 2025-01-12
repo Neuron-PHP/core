@@ -8,7 +8,7 @@ use Neuron\Events\Broadcasters\IBroadcaster;
 use Neuron\Patterns\Singleton\Memory;
 
 /**
- * Event Singleton
+ * Event Singleton to manage events as a cross-cutting concern.
  */
 
 class Event extends Memory
@@ -74,6 +74,4 @@ class Event extends Memory
 
 		$Emitter->getEmitter()->emit( $Event );
 	}
-
-
 }

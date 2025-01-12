@@ -22,7 +22,8 @@ abstract class CommandLineBase extends Base
 	protected abstract function getDescription(): string;
 
 	/**
-	 * @return array - accessor for the parameter array.
+	 * Returns an array of all handlers for command line parameters.
+	 * @return array
 	 */
 	protected function getHandlers(): array
 	{
@@ -51,7 +52,8 @@ abstract class CommandLineBase extends Base
 	}
 
 	/**
-	 * Processes the argv array.
+	 * Processes all parameters passed to the application.
+	 *
 	 * @return bool returns false if the execution should be halted.
 	 */
 	protected function processParameters(): bool
@@ -72,6 +74,7 @@ abstract class CommandLineBase extends Base
 	}
 
 	/**
+	 * Handles a single parameter passed on the command line.
 	 * @param string $Param
 	 * @param int $Index
 	 * @return bool returns false if the execution should be halted.
