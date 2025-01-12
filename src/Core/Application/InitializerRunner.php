@@ -2,6 +2,9 @@
 
 namespace Neuron\Core\Application;
 
+/**
+ * Loads and executes all initializers in the app/Initializers directory.
+ */
 class InitializerRunner
 {
 	private Base $base;

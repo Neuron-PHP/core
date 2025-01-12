@@ -19,15 +19,19 @@ abstract class Base implements IApplication
 {
 	private		string         $_BasePath;
 	private		string         $_EventListenersPath;
-	private		?Registry      $_Registry;
-	protected	array           $_Parameters;
-	protected	?Settingmanager $_Settings = null;
-	protected	string          $_Version;
-	protected	bool            $_HandleErrors = false;
-	protected	bool            $_HandleFatal  = false;
+	private		?Registry			$_Registry;
+	protected	array					$_Parameters;
+	protected	?Settingmanager	$_Settings = null;
+	protected	string				$_Version;
+	protected	bool					$_HandleErrors = false;
+	protected	bool					$_HandleFatal  = false;
 
 	/**
 	 * Initial setup for the application.
+	 *
+	 * Loads the config file.
+	 * Initializes the logger.
+	 *
 	 * @param string $Version
 	 * @param ISettingSource|null $Source
 	 * @throws Exception
@@ -103,6 +107,11 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Initializes the logger based on the parameters set in config.yaml.
+	 * 	destination
+	 * 	format
+	 * 	file
+	 * 	level
 	 * @throws Exception
 	 */
 	public function initLogger(): void
@@ -149,7 +158,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return bool
 	 */
-	public function isHandleErrors(): bool
+	public function willHandleErrors(): bool
 	{
 		return $this->_HandleErrors;
 	}
@@ -167,7 +176,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return bool
 	 */
-	public function isHandleFatal(): bool
+	public function willHandleFatal(): bool
 	{
 		return $this->_HandleFatal;
 	}
@@ -227,8 +236,10 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * Called before onRun. If false is returned, application terminates
-	 * * without executing onRun.
+	 * Called before onRun.
+	 *
+	 * Initializes the event system and executes all initializers.
+	 * If false is returned, application terminates without executing onRun.
 	 * @return bool
 	 */
 	protected function onStart() : bool
@@ -254,10 +265,11 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param string $Message
-	 * @return bool
 	 * Called for any unhandled exceptions.
 	 * Returning false skips executing onFinish.
+	 *
+	 * @param string $Message
+	 * @return bool
 	 */
 	protected function onError( string $Message ) : bool
 	{
@@ -267,6 +279,8 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Called by the fatal handler if invoked.
+	 *
 	 * @param array $Error
 	 * @return void
 	 */
@@ -276,6 +290,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Handler for fatal errors.
 	 * @return void
 	 */
 	public function fatalHandler(): void
@@ -291,6 +306,8 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Handler for PHP errors.
+	 *
 	 * @param int $ErrorNo
 	 * @param string $Message
 	 * @param string $File
@@ -341,6 +358,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Executes all initializer classes located in app/Initializers.
 	 * @return void
 	 */
 	protected function executeInitializers(): void
@@ -351,6 +369,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Loads event-listeners.yaml and maps all event listeners to their associated events.
 	 * @return void
 	 */
 	public function initEvents(): void
@@ -409,12 +428,13 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Gets a parameter by name.
 	 * @param string $param
 	 * @return mixed
 	 */
-	public function getParameter( string $param ): mixed
+	public function getParameter( string $name ): mixed
 	{
-		return $this->_Parameters[ $param ];
+		return $this->_Parameters[ $name ];
 	}
 
 	/**
@@ -436,11 +456,12 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * Sets up the php error and fatal handlers.
 	 * @return void
 	 */
 	protected function initErrorHandlers(): void
 	{
-		if( $this->isHandleErrors() )
+		if( $this->willHandleErrors() )
 		{
 			set_error_handler(
 				[
@@ -450,7 +471,7 @@ abstract class Base implements IApplication
 			);
 		}
 
-		if( $this->isHandleFatal() )
+		if( $this->willHandleFatal() )
 		{
 			register_shutdown_function(
 				[

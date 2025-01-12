@@ -8,6 +8,9 @@ use Neuron\Log;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Loads and registers event listeners from the config/event-listeners.yaml file.
+ */
 class EventLoader
 {
 	private Base $_Base;
