@@ -37,6 +37,14 @@ class ApplicationTest extends TestCase
 		);
 	}
 
+	public function testSettingsInRegistry()
+	{
+		$this->_App->run();
+		$this->assertNotNull(
+			Registry::getInstance()->get( 'Settings' )
+		);
+	}
+
 	public function testSetSettingSource()
 	{
 		$SettingSource = new Ini( 'examples/config/application.ini' );

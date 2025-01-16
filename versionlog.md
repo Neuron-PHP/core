@@ -1,3 +1,6 @@
+## 0.6.28 2025-01-16
+* Fix for registry.
+
 ## 0.6.27 2025-01-16
 * Added settings to the registry.
 
