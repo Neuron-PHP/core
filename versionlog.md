@@ -1,3 +1,5 @@
+## 0.6.27
+
 ## 0.6.26 2025-01-16
 * Refactored how settings are handled. If no setting file is found or supplied, the application default to environment variables.
 * Added additional tests.
