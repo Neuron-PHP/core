@@ -484,5 +484,7 @@ abstract class Base implements IApplication
 		{
 			$this->_Settings = new SettingManager( $Fallback );
 		}
+
+		Registry::getInstance()->set( 'Settings', $this->_Settings );
 	}
 }
