@@ -4,12 +4,14 @@ namespace Neuron\Core\Application;
 
 use Neuron\Data\Setting\SettingManager;
 use Neuron\Data\Setting\Source\ISettingSource;
+use Neuron\Data\Setting\Source\Env;
 use Exception;
 use Neuron\Log;
 use Neuron\Log\ILogger;
 use Neuron\Log\Logger;
 use Neuron\Patterns\Registry;
 use Neuron\Util;
+use Neuron\Data;
 
 /**
  * Base functionality for applications.
@@ -21,7 +23,7 @@ abstract class Base implements IApplication
 	private		string         $_EventListenersPath;
 	private		?Registry			$_Registry;
 	protected	array					$_Parameters;
-	protected	?Settingmanager	$_Settings = null;
+	protected	?SettingManager	$_Settings = null;
 	protected	string				$_Version;
 	protected	bool					$_HandleErrors = false;
 	protected	bool					$_HandleFatal  = false;
@@ -36,7 +38,6 @@ abstract class Base implements IApplication
 	 * @param ISettingSource|null $Source
 	 * @throws Exception
 	 */
-
 	public function __construct( string $Version, ?ISettingSource $Source = null )
 	{
 		$this->_BasePath = '.';
@@ -45,29 +46,13 @@ abstract class Base implements IApplication
 
 		$this->_Version = $Version;
 
-		if( !$Source )
-		{
-			return;
-		}
-
-		try
-		{
-			$this->_Settings = new SettingManager( $Source );
-		}
-		catch( Exception $exception )
-		{
-			Log\Log::error( "Failed to load settings: ".$exception->getMessage() );
-		}
+		$this->initSettings( $Source );
 
 		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) ?? 'UTC' );
-
-		$BasePath = $this->getSetting( 'base_path', 'system' ) ?? '.';
-		$this->setBasePath( $BasePath );
 
 		$this->_EventListenersPath = $this->getSetting( 'listeners_path', 'events' ) ?? '';
 
 		$this->initLogger();
-		$this->initErrorHandlers();
 	}
 
 	/**
@@ -218,11 +203,6 @@ abstract class Base implements IApplication
 	 */
 	public function setSetting( string $Name, string $Value, string $Section = 'default' ): void
 	{
-		if( !$this->_Settings )
-		{
-			return;
-		}
-
 		$this->_Settings->set( $Section, $Name, $Value );
 	}
 
@@ -246,11 +226,6 @@ abstract class Base implements IApplication
 	{
 		Log\Log::debug( "onStart()" );
 
-		if( !$this->_Settings )
-		{
-			return true;
-		}
-
 		$this->initEvents();
 		$this->executeInitializers();
 		return true;
@@ -258,8 +233,9 @@ abstract class Base implements IApplication
 
 	/**
 	 * Called immediately after onRun.
+	 * @return void
 	 */
-	protected function onFinish()
+	protected function onFinish(): void
 	{
 		Log\Log::debug( "onFinish()" );
 	}
@@ -297,12 +273,7 @@ abstract class Base implements IApplication
 	{
 		Log\Log::debug( "fatalHandler()" );
 
-		$Error = error_get_last();
-
-		if( $Error && $Error[ 'type' ] == E_ERROR )
-		{
-			$this->onCrash( $Error );
-		}
+		$this->onCrash( [ 'message' => 'Application shutdown' ] );
 	}
 
 	/**
@@ -388,6 +359,8 @@ abstract class Base implements IApplication
 	 */
 	public function run( array $Argv = [] ): bool
 	{
+		$this->initErrorHandlers();
+
 		$this->_Parameters = $Argv;
 
 		if( !$this->onStart() )
@@ -429,7 +402,7 @@ abstract class Base implements IApplication
 
 	/**
 	 * Gets a parameter by name.
-	 * @param string $param
+	 * @param string $name
 	 * @return mixed
 	 */
 	public function getParameter( string $name ): mixed
@@ -479,6 +452,37 @@ abstract class Base implements IApplication
 					'fatalHandler'
 				]
 			);
+		}
+	}
+
+	/**
+	 * @param ISettingSource|null $Source
+	 * @return void
+	 */
+	protected function initSettings( ?ISettingSource $Source ): void
+	{
+		$DefaultBasePath = getenv( 'SYSTEM_BASE_PATH' ) ? : '.';
+		$this->setBasePath( $DefaultBasePath );
+		$Fallback = new Env( Data\Env::getInstance( "$DefaultBasePath/.env" ) );
+
+		if( !$Source )
+		{
+			$this->_Settings = new SettingManager( $Fallback );
+			return;
+		}
+
+		try
+		{
+			$this->_Settings = new SettingManager( $Source );
+
+			$BasePath = $this->getSetting( 'base_path', 'system' ) ?? $DefaultBasePath;
+			$Fallback = new Env( Data\Env::getInstance( "$BasePath/.env" ) );
+			$this->_Settings->setFallback( $Fallback );
+			$this->setBasePath( $BasePath );
+		}
+		catch( Exception $Exception )
+		{
+			$this->_Settings = new SettingManager( $Fallback );
 		}
 	}
 }

@@ -29,7 +29,7 @@ class TestCommandLine extends \Neuron\Core\Application\CommandLineBase
 
 	protected function onStart(): bool
 	{
-		$this->addHandler( '--exit', 'Performs a single poll and executes all ready jobs.', 'exitCommand' );
+		$this->addHandler( '--exit', 'Test single execution command.', 'exitCommand' );
 		$this->addHandler( '--poll', 'Performs a single poll and executes all ready jobs.', 'pollCommand' );
 		$this->addHandler( '--interval', 'Set the interval between polls in seconds.', 'intervalCommand', true );
 
@@ -49,5 +49,6 @@ class TestCommandLine extends \Neuron\Core\Application\CommandLineBase
 	 */
 	protected function getDescription(): string
 	{
+		return 'Test command line application.';
 	}
 }
