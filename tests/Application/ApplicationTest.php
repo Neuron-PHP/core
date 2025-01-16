@@ -4,10 +4,11 @@ namespace Tests\Application;
 use Exception;
 use Neuron\Data\Setting\Source\Ini;
 use Neuron\Patterns\Registry;
+use PHPUnit\Framework\TestCase;
 use Tests\AppMock;
 use Tests\TestListener;
 
-class ApplicationTest extends \PHPUnit\Framework\TestCase
+class ApplicationTest extends TestCase
 {
 	private $_App;
 
@@ -17,6 +18,42 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 
 		$SettingSource = new Ini( 'examples/config/application.ini' );
 		$this->_App = new AppMock( "1.0", $SettingSource );
+	}
+
+	public function testEventListenerPath()
+	{
+		$this->_App->setEventListenersPath( 'examples/Listeners' );
+		$this->assertEquals(
+			'examples/Listeners',
+			$this->_App->getEventListenersPath()
+		);
+	}
+
+	public function testGetVersion()
+	{
+		$this->assertEquals(
+			'1.0',
+			$this->_App->getVersion()
+		);
+	}
+
+	public function testSetSettingSource()
+	{
+		$SettingSource = new Ini( 'examples/config/application.ini' );
+
+		$this->assertNotNull(
+			$this->_App->setSettingSource( $SettingSource )
+		);
+	}
+
+	public function testSetSetting()
+	{
+		$this->_App->setSetting( 'name', 'value', 'section' );
+
+		$this->assertEquals(
+			'value',
+			$this->_App->getSetting( 'name', 'section' )
+		);
 	}
 
 	public function testNoConfig()
@@ -39,6 +76,17 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(
 			$result,
 			'1234'
+		);
+	}
+
+	public function testFatal()
+	{
+		$this->_App->setHandleFatal( true );
+		$this->_App->run();
+		$this->_App->crash();
+
+		$this->assertTrue(
+			$this->_App->DidCrash
 		);
 	}
 
@@ -134,6 +182,19 @@ class ApplicationTest extends \PHPUnit\Framework\TestCase
 	public function testEventListeners()
 	{
 		$State = TestListener::$Count;
+		$this->_App->run();
+
+		$this->assertEquals(
+			$State + 1,
+			TestListener::$Count
+		);
+	}
+
+	public function testNullSource()
+	{
+		$State = TestListener::$Count;
+		$App = new AppMock( "1.0" );
+
 		$this->_App->run();
 
 		$this->assertEquals(

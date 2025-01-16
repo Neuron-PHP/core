@@ -2,9 +2,10 @@
 namespace Tests;
 
 use Exception;
+use Neuron\Core\Application\Base;
 use Neuron\Core\CrossCutting\Event;
 
-class AppMock extends \Neuron\Core\Application\Base
+class AppMock extends Base
 {
 	public bool $Crash    = false;
 	public bool $DidCrash = false;
@@ -42,6 +43,11 @@ class AppMock extends \Neuron\Core\Application\Base
 		$this->DidCrash = true;
 
 		parent::onCrash( $Error );
+	}
+
+	public function crash(): void
+	{
+		$this->fatalHandler();
 	}
 
 	protected function onError( string $Message ) : bool

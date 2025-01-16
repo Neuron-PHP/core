@@ -25,6 +25,12 @@ class CommandLineBaseTest extends TestCase
 		$this->assertFalse( $this->CommandLine->run( [ '--exit' ] ) );
 	}
 
+	public function testSwitchHelp()
+	{
+		$this->assertFalse( $this->CommandLine->run( [ '--help' ] ) );
+	}
+
+
 	public function testSwitchWithoutParam()
 	{
 		$this->assertTrue( $this->CommandLine->run( [ '--poll' ] ) );
