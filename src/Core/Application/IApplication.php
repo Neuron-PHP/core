@@ -22,6 +22,7 @@ interface IApplication extends Patterns\IRunnable
 	 * @param string $Section
 	 * @return mixed
 	 */
+
 	public function setSetting( string $Name, string $Value, string $Section = 'default' );
 
 	/**
@@ -29,11 +30,13 @@ interface IApplication extends Patterns\IRunnable
 	 * @param mixed $object
 	 * @return mixed
 	 */
+
 	public function setRegistryObject( string $name, mixed $object );
 
 	/**
 	 * @param string $name
 	 * @return mixed
 	 */
+
 	public function getRegistryObject( string $name ) : mixed;
 }

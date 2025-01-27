@@ -38,6 +38,7 @@ abstract class Base implements IApplication
 	 * @param ISettingSource|null $Source
 	 * @throws Exception
 	 */
+
 	public function __construct( string $Version, ?ISettingSource $Source = null )
 	{
 		$this->_BasePath = '.';
@@ -58,6 +59,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return string
 	 */
+
 	public function getEventListenersPath(): string
 	{
 		return $this->_EventListenersPath;
@@ -67,6 +69,7 @@ abstract class Base implements IApplication
 	 * @param string $EventListenersPath
 	 * @return Base
 	 */
+
 	public function setEventListenersPath( string $EventListenersPath ): Base
 	{
 		$this->_EventListenersPath = $EventListenersPath;
@@ -76,6 +79,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return string
 	 */
+
 	public function getBasePath(): string
 	{
 		return $this->_BasePath;
@@ -85,6 +89,7 @@ abstract class Base implements IApplication
 	 * @param string $BasePath
 	 * @return Base
 	 */
+
 	public function setBasePath( string $BasePath ): Base
 	{
 		$this->_BasePath = $BasePath;
@@ -99,6 +104,7 @@ abstract class Base implements IApplication
 	 * 	level
 	 * @throws Exception
 	 */
+
 	public function initLogger(): void
 	{
 		/** @var Log\Log $Log */
@@ -143,6 +149,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return bool
 	 */
+
 	public function willHandleErrors(): bool
 	{
 		return $this->_HandleErrors;
@@ -152,6 +159,7 @@ abstract class Base implements IApplication
 	 * @param bool $HandleErrors
 	 * @return Base
 	 */
+
 	public function setHandleErrors( bool $HandleErrors ): Base
 	{
 		$this->_HandleErrors = $HandleErrors;
@@ -161,6 +169,7 @@ abstract class Base implements IApplication
 	/**
 	 * @return bool
 	 */
+
 	public function willHandleFatal(): bool
 	{
 		return $this->_HandleFatal;
@@ -170,6 +179,7 @@ abstract class Base implements IApplication
 	 * @param bool $HandleFatal
 	 * @return Base
 	 */
+
 	public function setHandleFatal( bool $HandleFatal ): Base
 	{
 		$this->_HandleFatal = $HandleFatal;
@@ -180,6 +190,7 @@ abstract class Base implements IApplication
 	 * @param ISettingSource $Source
 	 * @return $this
 	 */
+
 	public function setSettingSource( ISettingSource $Source ) : Base
 	{
 		$this->_Settings = new SettingManager( $Source );
@@ -191,6 +202,7 @@ abstract class Base implements IApplication
 	 * @param string $Section
 	 * @return mixed
 	 */
+
 	public function getSetting( string $Name, string $Section = 'default' ): mixed
 	{
 		return $this->_Settings?->get( $Section, $Name );
@@ -201,6 +213,7 @@ abstract class Base implements IApplication
 	 * @param string $Value
 	 * @param string $Section
 	 */
+
 	public function setSetting( string $Name, string $Value, string $Section = 'default' ): void
 	{
 		$this->_Settings->set( $Section, $Name, $Value );
@@ -210,6 +223,7 @@ abstract class Base implements IApplication
 	 * Returns true if the application is running in command line mode.
 	 * @return bool
 	 */
+
 	public function isCommandLine(): bool
 	{
 		return Util\System::isCommandLine();
@@ -222,6 +236,7 @@ abstract class Base implements IApplication
 	 * If false is returned, application terminates without executing onRun.
 	 * @return bool
 	 */
+
 	protected function onStart() : bool
 	{
 		Log\Log::debug( "onStart()" );
@@ -235,6 +250,7 @@ abstract class Base implements IApplication
 	 * Called immediately after onRun.
 	 * @return void
 	 */
+
 	protected function onFinish(): void
 	{
 		Log\Log::debug( "onFinish()" );
@@ -247,6 +263,7 @@ abstract class Base implements IApplication
 	 * @param string $Message
 	 * @return bool
 	 */
+
 	protected function onError( string $Message ) : bool
 	{
 		Log\Log::error( "onError(): $Message" );
@@ -260,6 +277,7 @@ abstract class Base implements IApplication
 	 * @param array $Error
 	 * @return void
 	 */
+
 	protected function onCrash( array $Error ) : void
 	{
 		Log\Log::fatal( "onCrash(): ".$Error[ 'message' ] );
@@ -269,6 +287,7 @@ abstract class Base implements IApplication
 	 * Handler for fatal errors.
 	 * @return void
 	 */
+
 	public function fatalHandler(): void
 	{
 		Log\Log::debug( "fatalHandler()" );
@@ -285,6 +304,7 @@ abstract class Base implements IApplication
 	 * @param int $Line
 	 * @return bool
 	 */
+
 	public function phpErrorHandler( int $ErrorNo, string $Message, string $File, int $Line) : bool
 	{
 		switch( $ErrorNo )
@@ -317,12 +337,14 @@ abstract class Base implements IApplication
 	 * Must be implemented by derived classes.
 	 * @return void
 	 */
+
 	protected abstract function onRun() : void;
 
 	/**
 	 * Application version number.
 	 * @return string
 	 */
+
 	public function getVersion() : string
 	{
 		return $this->_Version;
@@ -332,6 +354,7 @@ abstract class Base implements IApplication
 	 * Executes all initializer classes located in app/Initializers.
 	 * @return void
 	 */
+
 	protected function executeInitializers(): void
 	{
 		Log\Log::debug( "executeInitializers()" );
@@ -343,6 +366,7 @@ abstract class Base implements IApplication
 	 * Loads event-listeners.yaml and maps all event listeners to their associated events.
 	 * @return void
 	 */
+
 	public function initEvents(): void
 	{
 		Log\Log::debug( "initEvents()" );
@@ -357,6 +381,7 @@ abstract class Base implements IApplication
 	 * @return bool
 	 * @throws Exception
 	 */
+
 	public function run( array $Argv = [] ): bool
 	{
 		$this->initErrorHandlers();
@@ -395,6 +420,7 @@ abstract class Base implements IApplication
 	 * returns parameters passed to the run method.
 	 * @return array
 	 */
+
 	public function getParameters(): array
 	{
 		return $this->_Parameters;
@@ -405,6 +431,7 @@ abstract class Base implements IApplication
 	 * @param string $name
 	 * @return mixed
 	 */
+
 	public function getParameter( string $name ): mixed
 	{
 		return $this->_Parameters[ $name ];
@@ -414,6 +441,7 @@ abstract class Base implements IApplication
 	 * @param string $name
 	 * @param mixed $object
 	 */
+
 	public function setRegistryObject( string $name, mixed $object ): void
 	{
 		$this->_Registry->set( $name, $object );
@@ -423,6 +451,7 @@ abstract class Base implements IApplication
 	 * @param string $name
 	 * @return mixed
 	 */
+
 	public function getRegistryObject( string $name ) : mixed
 	{
 		return $this->_Registry->get( $name );
@@ -432,6 +461,7 @@ abstract class Base implements IApplication
 	 * Sets up the php error and fatal handlers.
 	 * @return void
 	 */
+
 	protected function initErrorHandlers(): void
 	{
 		if( $this->willHandleErrors() )
@@ -459,6 +489,7 @@ abstract class Base implements IApplication
 	 * @param ISettingSource|null $Source
 	 * @return void
 	 */
+
 	protected function initSettings( ?ISettingSource $Source ): void
 	{
 		$DefaultBasePath = getenv( 'SYSTEM_BASE_PATH' ) ? : '.';

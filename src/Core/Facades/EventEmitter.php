@@ -24,6 +24,7 @@ class EventEmitter
 	 * @param IBroadcaster $Broadcaster
 	 * @return void
 	 */
+
 	public function registerBroadcaster( IBroadcaster $Broadcaster ) : void
 	{
 		$this->_Emitter->registerBroadcaster( $Broadcaster );
@@ -36,6 +37,7 @@ class EventEmitter
 	 *
 	 * @param array $Registry
 	 */
+
 	public function registerListeners( array $Registry ) : void
 	{
 		$Broadcasters = $this->_Emitter->getBroadcasters();
@@ -57,6 +59,7 @@ class EventEmitter
 	 * @param string $EventName
 	 * @param string $Listener
 	 */
+
 	public function registerListener( string $EventName, string $Listener ) : void
 	{
 		$Broadcasters = $this->_Emitter->getBroadcasters();
@@ -72,6 +75,7 @@ class EventEmitter
 	 * listeners.
 	 * @param $Event
 	 */
+
 	public function emit( $Event ) : void
 	{
 		$this->_Emitter->emit( $Event );
