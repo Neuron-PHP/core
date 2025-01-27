@@ -18,6 +18,7 @@ class Event extends Memory
 	/**
 	 * @return EventEmitter|null
 	 */
+
 	public function getEmitter() : ?EventEmitter
 	{
 		return $this->_Emitter;
@@ -26,6 +27,7 @@ class Event extends Memory
 	/**
 	 * @return void
 	 */
+
 	public function initIfNeeded(): void
 	{
 		if( !$this->_Emitter )
@@ -34,6 +36,11 @@ class Event extends Memory
 			$this->serialize();
 		}
 	}
+
+	/**
+	 * @param IBroadcaster $Broadcaster
+	 * @return void
+	 */
 
 	public static function registerBroadcaster( IBroadcaster $Broadcaster ) : void
 	{
@@ -47,6 +54,7 @@ class Event extends Memory
 	 * @param array $Registry
 	 * @return void
 	 */
+
 	public static function registerListeners( array $Registry ) : void
 	{
 		$Emitter = self::getInstance();
@@ -54,6 +62,12 @@ class Event extends Memory
 
 		$Emitter->getEmitter()->registerListeners( $Registry );
 	}
+
+	/**
+	 * @param string $EventName
+	 * @param string $Listener
+	 * @return void
+	 */
 
 	public static function registerListener( string $EventName, string $Listener ) : void
 	{
@@ -67,6 +81,7 @@ class Event extends Memory
 	 * @param $Event
 	 * @return void
 	 */
+
 	public static function emit( $Event ) : void
 	{
 		$Emitter = self::getInstance();

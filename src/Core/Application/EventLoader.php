@@ -23,6 +23,7 @@ class EventLoader
 	/**
 	 * @return void
 	 */
+
 	public function initEvents(): void
 	{
 		Log\Log::debug( "Loading event listeners." );
@@ -52,6 +53,7 @@ class EventLoader
 	/**
 	 * @return string
 	 */
+
 	protected function getPath(): string
 	{
 		$File = $this->_Base->getBasePath() . '/config';
@@ -67,6 +69,7 @@ class EventLoader
 	 * @param $events
 	 * @return void
 	 */
+
 	protected function loadEvents( $events ): void
 	{
 		foreach( $events as $Event )

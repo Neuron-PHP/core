@@ -19,12 +19,14 @@ abstract class CommandLineBase extends Base
 	 * Get the description of the application for --help.
 	 * @return string
 	 */
+
 	protected abstract function getDescription(): string;
 
 	/**
 	 * Returns an array of all handlers for command line parameters.
 	 * @return array
 	 */
+
 	protected function getHandlers(): array
 	{
 		return $this->_Handlers;
@@ -42,6 +44,7 @@ abstract class CommandLineBase extends Base
 	 * @param string $Method the name of the switch handler method.
 	 * @param bool|bool $Param if true, the next parameter will be passed to the handler as the value of the switch.
 	 */
+
 	protected function addHandler( string $Switch, string $Description, string $Method, bool $Param = false ): void
 	{
 		$this->_Handlers[ $Switch ] = [
@@ -56,6 +59,7 @@ abstract class CommandLineBase extends Base
 	 *
 	 * @return bool returns false if the execution should be halted.
 	 */
+
 	protected function processParameters(): bool
 	{
 		$ParamCount = count( $this->getParameters() );
@@ -79,6 +83,7 @@ abstract class CommandLineBase extends Base
 	 * @param int $Index
 	 * @return bool returns false if the execution should be halted.
 	 */
+
 	private function handleParameter( string $Param, int &$Index ): bool
 	{
 		foreach( $this->getHandlers() as $Switch => $Info )
@@ -112,6 +117,7 @@ abstract class CommandLineBase extends Base
 	 * Activated by the --help parameter. Shows all configured switches and their
 	 * hints.
 	 */
+
 	protected function help(): bool
 	{
 		echo basename( $_SERVER['PHP_SELF'], '.php' )."\n";
@@ -146,6 +152,7 @@ abstract class CommandLineBase extends Base
 	 *
 	 * @return bool
 	 */
+
 	protected function onStart() : bool
 	{
 		if( !$this->isCommandLine() )

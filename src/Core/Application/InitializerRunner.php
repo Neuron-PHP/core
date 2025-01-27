@@ -17,6 +17,7 @@ class InitializerRunner
 	/**
 	 * @return void
 	 */
+
 	public function execute(): void
 	{
 		$initializersPath = $this->getPath();
@@ -38,6 +39,7 @@ class InitializerRunner
 	/**
 	 * @return mixed|string
 	 */
+
 	protected function getPath(): mixed
 	{
 		$initializersPath = $this->base->getBasePath() . '/app/Initializers';
@@ -52,6 +54,7 @@ class InitializerRunner
 	/**
 	 * @return mixed|string
 	 */
+
 	protected function getNamespace(): mixed
 	{
 		$namespace = 'App\\Initializers\\';
@@ -67,6 +70,7 @@ class InitializerRunner
 	 * @param string $fullyQualifiedClassName
 	 * @return void
 	 */
+
 	protected function runInitializer( string $fullyQualifiedClassName ): void
 	{
 		if( class_exists( $fullyQualifiedClassName ) )

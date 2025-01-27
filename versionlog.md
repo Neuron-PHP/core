@@ -1,3 +1,6 @@
+## 0.6.29 2025-01-27
+* Updated data to 0.7
+
 ## 0.6.28 2025-01-16
 * Fix for registry.
 
