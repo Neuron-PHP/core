@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests;
+use Neuron\Core\NString;
 use PHPUnit;
 
 /**
@@ -17,14 +18,14 @@ class NStringTest extends PHPUnit\Framework\TestCase
 
 	protected function setUp(): void
 	{
-		$this->String = new \Neuron\Core\NString( $this::DATA );
+		$this->String = new NString( $this::DATA );
 
 		parent::setUp();
 	}
 
 	public function testConstruct()
 	{
-		$this->String = new \Neuron\Core\NString( $this::DATA );
+		$this->String = new NString( $this::DATA );
 
 		$this->assertEquals( $this::DATA, $this->String->value );
 	}
