@@ -1,0 +1,34 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    container:
+      image: php:8.4  # This forces the job to run in a Docker container
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install System Dependencies (Git, Zip, Unzip)
+      run: |
+        apt-get update
+        apt-get install -y unzip git zip
+
+    - name: Install and Enable extensions
+      run: |
+        docker-php-ext-install sockets calendar
+        docker-php-ext-enable sockets calendar
+
+    - name: Install Composer
+      run: |
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+        composer --version
+
+    - name: Install Dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Run PHPUnit
+      run: vendor/bin/phpunit tests
