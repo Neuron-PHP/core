@@ -82,14 +82,14 @@ class NStringTest extends PHPUnit\Framework\TestCase
 	{
 		$this->String->value = 'this_is_a_test';
 
-		$this->assertEquals( 'ThisIsATest', $this->String->toCamelCase() );
+		$this->assertEquals( 'thisIsATest', $this->String->toCamelCase() );
 	}
 
-	public function testToCamelCaseNoCap()
+	public function testToPascalCase()
 	{
 		$this->String->value = 'this_is_a_test';
 
-		$this->assertEquals( 'thisIsATest', $this->String->toCamelCase( false ) );
+		$this->assertEquals( 'ThisIsATest', $this->String->toPascalCase() );
 	}
 
 	public function testToSnakeCase()
@@ -97,5 +97,33 @@ class NStringTest extends PHPUnit\Framework\TestCase
 		$this->String->value = 'ThisIsATest';
 
 		$this->assertEquals( 'this_is_a_test', $this->String->toSnakeCase() );
+	}
+
+	public function testToUpper()
+	{
+		$this->String->value = 'Hello World';
+
+		$this->assertEquals( 'HELLO WORLD', $this->String->toUpper() );
+	}
+
+	public function testToLower()
+	{
+		$this->String->value = 'Hello World';
+
+		$this->assertEquals( 'hello world', $this->String->toLower() );
+	}
+
+	public function testToUpperWithMixedCase()
+	{
+		$this->String->value = 'HeLLo WoRLd 123';
+
+		$this->assertEquals( 'HELLO WORLD 123', $this->String->toUpper() );
+	}
+
+	public function testToLowerWithMixedCase()
+	{
+		$this->String->value = 'HeLLo WoRLd 123';
+
+		$this->assertEquals( 'hello world 123', $this->String->toLower() );
 	}
 }
