@@ -1,5 +1,6 @@
 ## 0.8.0
 * Added pascalCase, toUpper and toLower functions to NString.
+* Conversion to camelcase.
 
 ## 0.7.1 2025-02-06
 

@@ -56,12 +56,12 @@ class NString
 
 	/**
 	 * NString constructor.
-	 * @param string $String
+	 * @param string $string
 	 */
 
-	public function __construct( string $String )
+	public function __construct( string $string )
 	{
-		$this->value = $String;
+		$this->value = $string;
 	}
 
 	/**
@@ -74,34 +74,34 @@ class NString
 	}
 
 	/**
-	 * @param int $Length
+	 * @param int $length
 	 * @return string
 	 */
 
-	public function left( int $Length ): string
+	public function left( int $length ): string
 	{
-		return $this->mid( 0, $Length - 1 );
+		return $this->mid( 0, $length - 1 );
 	}
 
 	/**
-	 * @param int $Length
+	 * @param int $length
 	 * @return string
 	 */
 
-	public function right( int $Length ): string
+	public function right( int $length ): string
 	{
-		return $this->mid( $this->length() - $Length, $this->length() );
+		return $this->mid( $this->length() - $length, $this->length() );
 	}
 
 	/**
-	 * @param int $Start
-	 * @param int $End
+	 * @param int $start
+	 * @param int $end
 	 * @return string
 	 */
 
-	public function mid( int $Start, int $End ): string
+	public function mid( int $start, int $end ): string
 	{
-		return substr( $this->value, $Start, $End - $Start + 1 );
+		return substr( $this->value, $start, $end - $start + 1 );
 	}
 
 	/**
@@ -138,8 +138,8 @@ class NString
 	 */
 	public function toCamelCase(): string
 	{
-		$Str = str_replace('_', '', ucwords( $this->value, '_'));
-		return lcfirst( $Str );
+		$str = str_replace('_', '', ucwords( $this->value, '_'));
+		return lcfirst( $str );
 	}
 
 	/**

@@ -16,355 +16,355 @@ class NArrayTest extends PHPUnit\Framework\TestCase
 	const NUMERIC_DATA = [1, 2, 3, 4, 5];
 	const ASSOC_DATA = ['name' => 'John', 'age' => 30, 'city' => 'NYC'];
 
-	public $Array;
+	public $array;
 
 	protected function setUp(): void
 	{
-		$this->Array = new NArray( $this::TEST_DATA );
+		$this->array = new NArray( $this::TEST_DATA );
 
 		parent::setUp();
 	}
 
 	public function testConstruct()
 	{
-		$Array = new NArray( $this::TEST_DATA );
+		$array = new NArray( $this::TEST_DATA );
 
-		$this->assertEquals( $this::TEST_DATA, $Array->value );
+		$this->assertEquals( $this::TEST_DATA, $array->value );
 	}
 
 	public function testConstructEmpty()
 	{
-		$Array = new NArray();
+		$array = new NArray();
 
-		$this->assertEquals( [], $Array->value );
+		$this->assertEquals( [], $array->value );
 	}
 
 	public function testValue()
 	{
-		$this->Array->value = ['test', 'data'];
+		$this->array->value = ['test', 'data'];
 
-		$this->assertEquals( ['test', 'data'], $this->Array->value );
+		$this->assertEquals( ['test', 'data'], $this->array->value );
 	}
 
 	public function testContains()
 	{
-		$this->assertTrue( $this->Array->contains( 'apple' ) );
-		$this->assertFalse( $this->Array->contains( 'grape' ) );
+		$this->assertTrue( $this->array->contains( 'apple' ) );
+		$this->assertFalse( $this->array->contains( 'grape' ) );
 	}
 
 	public function testContainsWithKey()
 	{
-		$Array = new NArray( $this::ASSOC_DATA );
+		$array = new NArray( $this::ASSOC_DATA );
 
-		$this->assertTrue( $Array->contains( 'John', 'name' ) );
-		$this->assertFalse( $Array->contains( 'Jane', 'name' ) );
-		$this->assertFalse( $Array->contains( 'John', 'invalid_key' ) );
+		$this->assertTrue( $array->contains( 'John', 'name' ) );
+		$this->assertFalse( $array->contains( 'Jane', 'name' ) );
+		$this->assertFalse( $array->contains( 'John', 'invalid_key' ) );
 	}
 
 	public function testHasKey()
 	{
-		$Array = new NArray( $this::ASSOC_DATA );
+		$array = new NArray( $this::ASSOC_DATA );
 
-		$this->assertTrue( $Array->hasKey( 'name' ) );
-		$this->assertFalse( $Array->hasKey( 'invalid_key' ) );
+		$this->assertTrue( $array->hasKey( 'name' ) );
+		$this->assertFalse( $array->hasKey( 'invalid_key' ) );
 	}
 
 	public function testGetElement()
 	{
-		$this->assertEquals( 'apple', $this->Array->getElement( 0 ) );
-		$this->assertEquals( 'default', $this->Array->getElement( 10, 'default' ) );
-		$this->assertNull( $this->Array->getElement( 10 ) );
+		$this->assertEquals( 'apple', $this->array->getElement( 0 ) );
+		$this->assertEquals( 'default', $this->array->getElement( 10, 'default' ) );
+		$this->assertNull( $this->array->getElement( 10 ) );
 	}
 
 	public function testIndexOf()
 	{
-		$this->assertEquals( 1, $this->Array->indexOf( 'banana' ) );
-		$this->assertFalse( $this->Array->indexOf( 'grape' ) );
+		$this->assertEquals( 1, $this->array->indexOf( 'banana' ) );
+		$this->assertFalse( $this->array->indexOf( 'grape' ) );
 	}
 
 	public function testRemove()
 	{
-		$Result = $this->Array->remove( 'banana' );
+		$result = $this->array->remove( 'banana' );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertFalse( $this->Array->contains( 'banana' ) );
-		$this->assertEquals( 3, $this->Array->count() );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertFalse( $this->array->contains( 'banana' ) );
+		$this->assertEquals( 3, $this->array->count() );
 	}
 
 	public function testCount()
 	{
-		$this->assertEquals( 4, $this->Array->count() );
+		$this->assertEquals( 4, $this->array->count() );
 
-		$Empty = new NArray();
-		$this->assertEquals( 0, $Empty->count() );
+		$empty = new NArray();
+		$this->assertEquals( 0, $empty->count() );
 	}
 
 	public function testIsEmpty()
 	{
-		$this->assertFalse( $this->Array->isEmpty() );
+		$this->assertFalse( $this->array->isEmpty() );
 
-		$Empty = new NArray();
-		$this->assertTrue( $Empty->isEmpty() );
+		$empty = new NArray();
+		$this->assertTrue( $empty->isEmpty() );
 	}
 
 	public function testIsNotEmpty()
 	{
-		$this->assertTrue( $this->Array->isNotEmpty() );
+		$this->assertTrue( $this->array->isNotEmpty() );
 
-		$Empty = new NArray();
-		$this->assertFalse( $Empty->isNotEmpty() );
+		$empty = new NArray();
+		$this->assertFalse( $empty->isNotEmpty() );
 	}
 
 	public function testMap()
 	{
-		$Result = $this->Array->map( fn($item) => strtoupper($item) );
+		$result = $this->array->map( fn($item) => strtoupper($item) );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['APPLE', 'BANANA', 'CHERRY', 'DATE'], $Result->value );
-		$this->assertEquals( $this::TEST_DATA, $this->Array->value ); // Original unchanged
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['APPLE', 'BANANA', 'CHERRY', 'DATE'], $result->value );
+		$this->assertEquals( $this::TEST_DATA, $this->array->value ); // Original unchanged
 	}
 
 	public function testFilter()
 	{
-		$Result = $this->Array->filter( fn($item) => strlen($item) > 5 );
+		$result = $this->array->filter( fn($item) => strlen($item) > 5 );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertTrue( $Result->contains( 'banana' ) );
-		$this->assertTrue( $Result->contains( 'cherry' ) );
-		$this->assertFalse( $Result->contains( 'apple' ) );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertTrue( $result->contains( 'banana' ) );
+		$this->assertTrue( $result->contains( 'cherry' ) );
+		$this->assertFalse( $result->contains( 'apple' ) );
 	}
 
 	public function testReduce()
 	{
-		$NumericArray = new NArray( $this::NUMERIC_DATA );
-		$Sum = $NumericArray->reduce( fn($carry, $item) => $carry + $item, 0 );
+		$numericArray = new NArray( $this::NUMERIC_DATA );
+		$sum = $numericArray->reduce( fn($carry, $item) => $carry + $item, 0 );
 
-		$this->assertEquals( 15, $Sum );
+		$this->assertEquals( 15, $sum );
 	}
 
 	public function testEach()
 	{
-		$Count = 0;
-		$Result = $this->Array->each( function($item) use (&$Count) {
-			$Count++;
+		$count = 0;
+		$result = $this->array->each( function($item) use (&$count) {
+			$count++;
 		});
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( 4, $Count );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( 4, $count );
 	}
 
 	public function testFirst()
 	{
-		$this->assertEquals( 'apple', $this->Array->first() );
+		$this->assertEquals( 'apple', $this->array->first() );
 
-		$Empty = new NArray();
-		$this->assertEquals( 'default', $Empty->first( 'default' ) );
-		$this->assertNull( $Empty->first() );
+		$empty = new NArray();
+		$this->assertEquals( 'default', $empty->first( 'default' ) );
+		$this->assertNull( $empty->first() );
 	}
 
 	public function testLast()
 	{
-		$this->assertEquals( 'date', $this->Array->last() );
+		$this->assertEquals( 'date', $this->array->last() );
 
-		$Empty = new NArray();
-		$this->assertEquals( 'default', $Empty->last( 'default' ) );
-		$this->assertNull( $Empty->last() );
+		$empty = new NArray();
+		$this->assertEquals( 'default', $empty->last( 'default' ) );
+		$this->assertNull( $empty->last() );
 	}
 
 	public function testKeys()
 	{
-		$Array = new NArray( $this::ASSOC_DATA );
-		$Result = $Array->keys();
+		$array = new NArray( $this::ASSOC_DATA );
+		$result = $array->keys();
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['name', 'age', 'city'], $Result->value );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['name', 'age', 'city'], $result->value );
 	}
 
 	public function testValues()
 	{
-		$Array = new NArray( $this::ASSOC_DATA );
-		$Result = $Array->values();
+		$array = new NArray( $this::ASSOC_DATA );
+		$result = $array->values();
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['John', 30, 'NYC'], $Result->value );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['John', 30, 'NYC'], $result->value );
 	}
 
 	public function testMerge()
 	{
-		$Other = new NArray( ['grape', 'orange'] );
-		$Result = $this->Array->merge( $Other );
+		$other = new NArray( ['grape', 'orange'] );
+		$result = $this->array->merge( $other );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( 6, $Result->count() );
-		$this->assertTrue( $Result->contains( 'apple' ) );
-		$this->assertTrue( $Result->contains( 'grape' ) );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( 6, $result->count() );
+		$this->assertTrue( $result->contains( 'apple' ) );
+		$this->assertTrue( $result->contains( 'grape' ) );
 	}
 
 	public function testMergeWithArray()
 	{
-		$Result = $this->Array->merge( ['grape', 'orange'] );
+		$result = $this->array->merge( ['grape', 'orange'] );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( 6, $Result->count() );
-		$this->assertTrue( $Result->contains( 'grape' ) );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( 6, $result->count() );
+		$this->assertTrue( $result->contains( 'grape' ) );
 	}
 
 	public function testUnique()
 	{
-		$Duplicates = new NArray( ['apple', 'banana', 'apple', 'cherry'] );
-		$Result = $Duplicates->unique();
+		$duplicates = new NArray( ['apple', 'banana', 'apple', 'cherry'] );
+		$result = $duplicates->unique();
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( 3, $Result->count() );
-		$this->assertTrue( $Result->contains( 'apple' ) );
-		$this->assertTrue( $Result->contains( 'banana' ) );
-		$this->assertTrue( $Result->contains( 'cherry' ) );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( 3, $result->count() );
+		$this->assertTrue( $result->contains( 'apple' ) );
+		$this->assertTrue( $result->contains( 'banana' ) );
+		$this->assertTrue( $result->contains( 'cherry' ) );
 	}
 
 	public function testSort()
 	{
-		$Result = $this->Array->sort();
+		$result = $this->array->sort();
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['apple', 'banana', 'cherry', 'date'], $Result->value );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['apple', 'banana', 'cherry', 'date'], $result->value );
 	}
 
 	public function testSortKeys()
 	{
-		$Array = new NArray( ['c' => 3, 'a' => 1, 'b' => 2] );
-		$Result = $Array->sortKeys();
+		$array = new NArray( ['c' => 3, 'a' => 1, 'b' => 2] );
+		$result = $array->sortKeys();
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['a' => 1, 'b' => 2, 'c' => 3], $Result->value );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['a' => 1, 'b' => 2, 'c' => 3], $result->value );
 	}
 
 	public function testReverse()
 	{
-		$Result = $this->Array->reverse();
+		$result = $this->array->reverse();
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['date', 'cherry', 'banana', 'apple'], $Result->value );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['date', 'cherry', 'banana', 'apple'], $result->value );
 	}
 
 	public function testSlice()
 	{
-		$Result = $this->Array->slice( 1, 2 );
+		$result = $this->array->slice( 1, 2 );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['banana', 'cherry'], $Result->value );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['banana', 'cherry'], $result->value );
 	}
 
 	public function testChunk()
 	{
-		$Result = $this->Array->chunk( 2 );
+		$result = $this->array->chunk( 2 );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( 2, $Result->count() );
-		$this->assertEquals( ['apple', 'banana'], $Result->getElement( 0 ) );
-		$this->assertEquals( ['cherry', 'date'], $Result->getElement( 1 ) );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( 2, $result->count() );
+		$this->assertEquals( ['apple', 'banana'], $result->getElement( 0 ) );
+		$this->assertEquals( ['cherry', 'date'], $result->getElement( 1 ) );
 	}
 
 	public function testFind()
 	{
-		$Result = $this->Array->find( fn($item) => strlen($item) > 5 );
+		$result = $this->array->find( fn($item) => strlen($item) > 5 );
 
-		$this->assertEquals( 'banana', $Result );
+		$this->assertEquals( 'banana', $result );
 
-		$NotFound = $this->Array->find( fn($item) => strlen($item) > 10, 'default' );
-		$this->assertEquals( 'default', $NotFound );
+		$notFound = $this->array->find( fn($item) => strlen($item) > 10, 'default' );
+		$this->assertEquals( 'default', $notFound );
 	}
 
 	public function testFindBy()
 	{
-		$Users = new NArray( [
+		$users = new NArray( [
 			['name' => 'Alice', 'age' => 30],
 			['name' => 'Bob', 'age' => 25]
 		]);
 
-		$Result = $Users->findBy( 'name', 'Bob' );
-		$this->assertEquals( ['name' => 'Bob', 'age' => 25], $Result );
+		$result = $users->findBy( 'name', 'Bob' );
+		$this->assertEquals( ['name' => 'Bob', 'age' => 25], $result );
 
-		$NotFound = $Users->findBy( 'name', 'Charlie', 'default' );
-		$this->assertEquals( 'default', $NotFound );
+		$notFound = $users->findBy( 'name', 'Charlie', 'default' );
+		$this->assertEquals( 'default', $notFound );
 	}
 
 	public function testWhere()
 	{
-		$Users = new NArray( [
+		$users = new NArray( [
 			['name' => 'Alice', 'age' => 30],
 			['name' => 'Bob', 'age' => 25],
 			['name' => 'Charlie', 'age' => 30]
 		]);
 
-		$Result = $Users->where( 'age', 30 );
+		$result = $users->where( 'age', 30 );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( 2, $Result->count() );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( 2, $result->count() );
 	}
 
 	public function testPluck()
 	{
-		$Users = new NArray( [
+		$users = new NArray( [
 			['name' => 'Alice', 'age' => 30],
 			['name' => 'Bob', 'age' => 25]
 		]);
 
-		$Result = $Users->pluck( 'name' );
+		$result = $users->pluck( 'name' );
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['Alice', 'Bob'], $Result->value );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['Alice', 'Bob'], $result->value );
 	}
 
 	public function testSum()
 	{
-		$NumericArray = new NArray( $this::NUMERIC_DATA );
-		$this->assertEquals( 15, $NumericArray->sum() );
+		$numericArray = new NArray( $this::NUMERIC_DATA );
+		$this->assertEquals( 15, $numericArray->sum() );
 
-		$MixedArray = new NArray( [1, 'text', 3, 'more text', 5] );
-		$this->assertEquals( 9, $MixedArray->sum() );
+		$mixedArray = new NArray( [1, 'text', 3, 'more text', 5] );
+		$this->assertEquals( 9, $mixedArray->sum() );
 	}
 
 	public function testAvg()
 	{
-		$NumericArray = new NArray( $this::NUMERIC_DATA );
-		$this->assertEquals( 3, $NumericArray->avg() );
+		$numericArray = new NArray( $this::NUMERIC_DATA );
+		$this->assertEquals( 3, $numericArray->avg() );
 
-		$EmptyArray = new NArray();
-		$this->assertNull( $EmptyArray->avg() );
+		$emptyArray = new NArray();
+		$this->assertNull( $emptyArray->avg() );
 	}
 
 	public function testMin()
 	{
-		$NumericArray = new NArray( $this::NUMERIC_DATA );
-		$this->assertEquals( 1, $NumericArray->min() );
+		$numericArray = new NArray( $this::NUMERIC_DATA );
+		$this->assertEquals( 1, $numericArray->min() );
 
-		$EmptyArray = new NArray();
-		$this->assertNull( $EmptyArray->min() );
+		$emptyArray = new NArray();
+		$this->assertNull( $emptyArray->min() );
 	}
 
 	public function testMax()
 	{
-		$NumericArray = new NArray( $this::NUMERIC_DATA );
-		$this->assertEquals( 5, $NumericArray->max() );
+		$numericArray = new NArray( $this::NUMERIC_DATA );
+		$this->assertEquals( 5, $numericArray->max() );
 
-		$EmptyArray = new NArray();
-		$this->assertNull( $EmptyArray->max() );
+		$emptyArray = new NArray();
+		$this->assertNull( $emptyArray->max() );
 	}
 
 	public function testToJson()
 	{
-		$Expected = json_encode( $this::TEST_DATA );
-		$this->assertEquals( $Expected, $this->Array->toJson() );
+		$expected = json_encode( $this::TEST_DATA );
+		$this->assertEquals( $expected, $this->array->toJson() );
 	}
 
 	public function testImplode()
 	{
-		$this->assertEquals( 'apple,banana,cherry,date', $this->Array->implode( ',' ) );
+		$this->assertEquals( 'apple,banana,cherry,date', $this->array->implode( ',' ) );
 	}
 
 	public function testToArray()
 	{
-		$this->assertEquals( $this::TEST_DATA, $this->Array->toArray() );
+		$this->assertEquals( $this::TEST_DATA, $this->array->toArray() );
 	}
 
 	public function testMethodChaining()
@@ -372,13 +372,13 @@ class NArrayTest extends PHPUnit\Framework\TestCase
 		// TEST_DATA = ['apple', 'banana', 'cherry', 'date']
 		// Filter for items > 4 chars should get: banana(6), cherry(6)
 		// apple(5) and date(4) should be excluded
-		$Result = $this->Array
+		$result = $this->array
 			->filter( fn($item) => strlen($item) > 5 )  // Only banana and cherry
 			->map( fn($item) => strtoupper($item) )
 			->values()  // Reset keys to 0, 1, 2...
 			->sort();
 
-		$this->assertInstanceOf( NArray::class, $Result );
-		$this->assertEquals( ['BANANA', 'CHERRY'], $Result->value );
+		$this->assertInstanceOf( NArray::class, $result );
+		$this->assertEquals( ['BANANA', 'CHERRY'], $result->value );
 	}
 }

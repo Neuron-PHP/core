@@ -66,89 +66,89 @@ class NArray
 
 	/**
 	 * NArray constructor.
-	 * @param array $Array
+	 * @param array $array
 	 */
-	public function __construct( array $Array = [] )
+	public function __construct( array $array = [] )
 	{
-		$this->value = $Array;
+		$this->value = $array;
 	}
 
 	/**
 	 * Check if the array contains a specific value, optionally at a specific key.
-	 * 
-	 * @param mixed $Value The value to search for
-	 * @param string|int|null $Key Optional key to check for the value
+	 *
+	 * @param mixed $value The value to search for
+	 * @param string|int|null $key Optional key to check for the value
 	 * @return bool True if the value is found, false otherwise
 	 */
-	public function contains( mixed $Value, string|int|null $Key = null ): bool
+	public function contains( mixed $value, string|int|null $key = null ): bool
 	{
-		if( !$Key )
+		if( !$key )
 		{
-			return in_array( $Value, $this->value );
+			return in_array( $value, $this->value );
 		}
 
-		if( !$this->hasKey( $Key ) )
+		if( !$this->hasKey( $key ) )
 		{
 			return false;
 		}
 
-		return $this->value[ $Key ] == $Value;
+		return $this->value[ $key ] == $value;
 	}
 
 	/**
 	 * Check if a key exists in the array.
-	 * 
-	 * @param string|int $Key The key to check for
+	 *
+	 * @param string|int $key The key to check for
 	 * @return bool True if the key exists, false otherwise
 	 */
-	public function hasKey( string|int $Key ): bool
+	public function hasKey( string|int $key ): bool
 	{
-		return isset( $this->value[ $Key ] ) || array_key_exists( $Key, $this->value );
+		return isset( $this->value[ $key ] ) || array_key_exists( $key, $this->value );
 	}
 
 	/**
 	 * Get an element from the array with optional default value.
-	 * 
-	 * @param string|int $Key The key to retrieve
-	 * @param mixed $Default Default value if key doesn't exist
+	 *
+	 * @param string|int $key The key to retrieve
+	 * @param mixed $default Default value if key doesn't exist
 	 * @return mixed The value at the key or the default value
 	 */
-	public function getElement( string|int $Key, mixed $Default = null ): mixed
+	public function getElement( string|int $key, mixed $default = null ): mixed
 	{
-		if( array_key_exists( $Key, $this->value ) )
+		if( array_key_exists( $key, $this->value ) )
 		{
-			return $this->value[ $Key ];
+			return $this->value[ $key ];
 		}
 
-		return $Default;
+		return $default;
 	}
 
 	/**
 	 * Find the index of an element in the array.
-	 * 
-	 * @param mixed $Item The item to search for
+	 *
+	 * @param mixed $item The item to search for
 	 * @return int|string|false The key of the item or false if not found
 	 */
-	public function indexOf( mixed $Item ): int|string|false
+	public function indexOf( mixed $item ): int|string|false
 	{
-		return array_search( $Item, $this->value );
+		return array_search( $item, $this->value );
 	}
 
 	/**
 	 * Remove an element from the array by value.
-	 * 
-	 * @param mixed $Item The item to remove
+	 *
+	 * @param mixed $item The item to remove
 	 * @return NArray Returns self for method chaining
 	 */
-	public function remove( mixed $Item ): NArray
+	public function remove( mixed $item ): NArray
 	{
-		$Index = $this->indexOf( $Item );
+		$index = $this->indexOf( $item );
 
-		if( $Index !== false )
+		if( $index !== false )
 		{
-			$Array = $this->_value;
-			unset( $Array[ $Index ] );
-			$this->_value = $Array;
+			$array = $this->_value;
+			unset( $array[ $index ] );
+			$this->_value = $array;
 		}
 
 		return $this;
@@ -186,49 +186,49 @@ class NArray
 
 	/**
 	 * Apply a callback function to each element and return a new NArray.
-	 * 
-	 * @param callable $Callback The callback function to apply
+	 *
+	 * @param callable $callback The callback function to apply
 	 * @return NArray A new NArray with transformed values
 	 */
-	public function map( callable $Callback ): NArray
+	public function map( callable $callback ): NArray
 	{
-		return new NArray( array_map( $Callback, $this->value ) );
+		return new NArray( array_map( $callback, $this->value ) );
 	}
 
 	/**
 	 * Filter the array using a callback function.
-	 * 
-	 * @param callable $Callback The callback function for filtering
+	 *
+	 * @param callable $callback The callback function for filtering
 	 * @return NArray A new NArray with filtered values
 	 */
-	public function filter( callable $Callback ): NArray
+	public function filter( callable $callback ): NArray
 	{
-		return new NArray( array_filter( $this->value, $Callback ) );
+		return new NArray( array_filter( $this->value, $callback ) );
 	}
 
 	/**
 	 * Reduce the array to a single value using a callback function.
-	 * 
-	 * @param callable $Callback The callback function for reduction
-	 * @param mixed $Initial Initial value for the reduction
+	 *
+	 * @param callable $callback The callback function for reduction
+	 * @param mixed $initial Initial value for the reduction
 	 * @return mixed The reduced value
 	 */
-	public function reduce( callable $Callback, mixed $Initial = null ): mixed
+	public function reduce( callable $callback, mixed $initial = null ): mixed
 	{
-		return array_reduce( $this->value, $Callback, $Initial );
+		return array_reduce( $this->value, $callback, $initial );
 	}
 
 	/**
 	 * Execute a callback for each element in the array.
-	 * 
-	 * @param callable $Callback The callback function to execute
+	 *
+	 * @param callable $callback The callback function to execute
 	 * @return NArray Returns self for method chaining
 	 */
-	public function each( callable $Callback ): NArray
+	public function each( callable $callback ): NArray
 	{
 		foreach( $this->value as $key => $value )
 		{
-			$Callback( $value, $key );
+			$callback( $value, $key );
 		}
 
 		return $this;
@@ -236,36 +236,36 @@ class NArray
 
 	/**
 	 * Get the first element of the array.
-	 * 
-	 * @param mixed $Default Default value if array is empty
+	 *
+	 * @param mixed $default Default value if array is empty
 	 * @return mixed The first element or default value
 	 */
-	public function first( mixed $Default = null ): mixed
+	public function first( mixed $default = null ): mixed
 	{
 		if( $this->isEmpty() )
 		{
-			return $Default;
+			return $default;
 		}
 
-		$Array = $this->_value;
-		return reset( $Array );
+		$array = $this->_value;
+		return reset( $array );
 	}
 
 	/**
 	 * Get the last element of the array.
-	 * 
-	 * @param mixed $Default Default value if array is empty
+	 *
+	 * @param mixed $default Default value if array is empty
 	 * @return mixed The last element or default value
 	 */
-	public function last( mixed $Default = null ): mixed
+	public function last( mixed $default = null ): mixed
 	{
 		if( $this->isEmpty() )
 		{
-			return $Default;
+			return $default;
 		}
 
-		$Array = $this->_value;
-		return end( $Array );
+		$array = $this->_value;
+		return end( $array );
 	}
 
 	/**
@@ -290,14 +290,14 @@ class NArray
 
 	/**
 	 * Merge this array with another array or NArray.
-	 * 
-	 * @param array|NArray $Array The array to merge with
+	 *
+	 * @param array|NArray $array The array to merge with
 	 * @return NArray A new NArray with merged values
 	 */
-	public function merge( array|NArray $Array ): NArray
+	public function merge( array|NArray $array ): NArray
 	{
-		$MergeArray = $Array instanceof NArray ? $Array->value : $Array;
-		return new NArray( array_merge( $this->value, $MergeArray ) );
+		$mergeArray = $array instanceof NArray ? $array->value : $array;
+		return new NArray( array_merge( $this->value, $mergeArray ) );
 	}
 
 	/**
@@ -312,131 +312,131 @@ class NArray
 
 	/**
 	 * Sort the array and return a new NArray.
-	 * 
-	 * @param int $SortFlags Sort flags (SORT_REGULAR, SORT_NUMERIC, etc.)
+	 *
+	 * @param int $sortFlags Sort flags (SORT_REGULAR, SORT_NUMERIC, etc.)
 	 * @return NArray A new NArray with sorted values
 	 */
-	public function sort( int $SortFlags = SORT_REGULAR ): NArray
+	public function sort( int $sortFlags = SORT_REGULAR ): NArray
 	{
-		$Sorted = $this->value;
-		sort( $Sorted, $SortFlags );
-		return new NArray( $Sorted );
+		$sorted = $this->value;
+		sort( $sorted, $sortFlags );
+		return new NArray( $sorted );
 	}
 
 	/**
 	 * Sort the array by keys and return a new NArray.
-	 * 
-	 * @param int $SortFlags Sort flags (SORT_REGULAR, SORT_NUMERIC, etc.)
+	 *
+	 * @param int $sortFlags Sort flags (SORT_REGULAR, SORT_NUMERIC, etc.)
 	 * @return NArray A new NArray with sorted keys
 	 */
-	public function sortKeys( int $SortFlags = SORT_REGULAR ): NArray
+	public function sortKeys( int $sortFlags = SORT_REGULAR ): NArray
 	{
-		$Sorted = $this->value;
-		ksort( $Sorted, $SortFlags );
-		return new NArray( $Sorted );
+		$sorted = $this->value;
+		ksort( $sorted, $sortFlags );
+		return new NArray( $sorted );
 	}
 
 	/**
 	 * Reverse the array and return a new NArray.
-	 * 
-	 * @param bool $PreserveKeys Whether to preserve keys
+	 *
+	 * @param bool $preserveKeys Whether to preserve keys
 	 * @return NArray A new NArray with reversed values
 	 */
-	public function reverse( bool $PreserveKeys = false ): NArray
+	public function reverse( bool $preserveKeys = false ): NArray
 	{
-		return new NArray( array_reverse( $this->value, $PreserveKeys ) );
+		return new NArray( array_reverse( $this->value, $preserveKeys ) );
 	}
 
 	/**
 	 * Extract a slice of the array.
-	 * 
-	 * @param int $Offset Starting position
-	 * @param int|null $Length Number of elements to extract
-	 * @param bool $PreserveKeys Whether to preserve keys
+	 *
+	 * @param int $offset Starting position
+	 * @param int|null $length Number of elements to extract
+	 * @param bool $preserveKeys Whether to preserve keys
 	 * @return NArray A new NArray with the slice
 	 */
-	public function slice( int $Offset, ?int $Length = null, bool $PreserveKeys = false ): NArray
+	public function slice( int $offset, ?int $length = null, bool $preserveKeys = false ): NArray
 	{
-		return new NArray( array_slice( $this->value, $Offset, $Length, $PreserveKeys ) );
+		return new NArray( array_slice( $this->value, $offset, $length, $preserveKeys ) );
 	}
 
 	/**
 	 * Split the array into chunks.
-	 * 
-	 * @param int $Size The size of each chunk
-	 * @param bool $PreserveKeys Whether to preserve keys
+	 *
+	 * @param int $size The size of each chunk
+	 * @param bool $preserveKeys Whether to preserve keys
 	 * @return NArray A new NArray containing arrays of chunks
 	 */
-	public function chunk( int $Size, bool $PreserveKeys = false ): NArray
+	public function chunk( int $size, bool $preserveKeys = false ): NArray
 	{
-		return new NArray( array_chunk( $this->value, $Size, $PreserveKeys ) );
+		return new NArray( array_chunk( $this->value, $size, $preserveKeys ) );
 	}
 
 	/**
 	 * Find the first element matching a callback function.
-	 * 
-	 * @param callable $Callback The callback function for matching
-	 * @param mixed $Default Default value if no match found
+	 *
+	 * @param callable $callback The callback function for matching
+	 * @param mixed $default Default value if no match found
 	 * @return mixed The first matching element or default value
 	 */
-	public function find( callable $Callback, mixed $Default = null ): mixed
+	public function find( callable $callback, mixed $default = null ): mixed
 	{
 		foreach( $this->value as $key => $value )
 		{
-			if( $Callback( $value, $key ) )
+			if( $callback( $value, $key ) )
 			{
 				return $value;
 			}
 		}
 
-		return $Default;
+		return $default;
 	}
 
 	/**
 	 * Find the first element with a specific key-value pair.
-	 * 
-	 * @param string|int $Key The key to check
-	 * @param mixed $Value The value to match
-	 * @param mixed $Default Default value if no match found
+	 *
+	 * @param string|int $key The key to check
+	 * @param mixed $value The value to match
+	 * @param mixed $default Default value if no match found
 	 * @return mixed The first matching element or default value
 	 */
-	public function findBy( string|int $Key, mixed $Value, mixed $Default = null ): mixed
+	public function findBy( string|int $key, mixed $value, mixed $default = null ): mixed
 	{
-		return $this->find( function( $Item ) use ( $Key, $Value ) {
-			return is_array( $Item ) && isset( $Item[ $Key ] ) && $Item[ $Key ] === $Value;
-		}, $Default );
+		return $this->find( function( $item ) use ( $key, $value ) {
+			return is_array( $item ) && isset( $item[ $key ] ) && $item[ $key ] === $value;
+		}, $default );
 	}
 
 	/**
 	 * Filter elements by a specific key-value pair.
-	 * 
-	 * @param string|int $Key The key to check
-	 * @param mixed $Value The value to match
+	 *
+	 * @param string|int $key The key to check
+	 * @param mixed $value The value to match
 	 * @return NArray A new NArray with matching elements
 	 */
-	public function where( string|int $Key, mixed $Value ): NArray
+	public function where( string|int $key, mixed $value ): NArray
 	{
-		return $this->filter( function( $Item ) use ( $Key, $Value ) {
-			return is_array( $Item ) && isset( $Item[ $Key ] ) && $Item[ $Key ] === $Value;
+		return $this->filter( function( $item ) use ( $key, $value ) {
+			return is_array( $item ) && isset( $item[ $key ] ) && $item[ $key ] === $value;
 		});
 	}
 
 	/**
 	 * Extract a specific key from each element (for arrays of arrays/objects).
-	 * 
-	 * @param string|int $Key The key to extract
+	 *
+	 * @param string|int $key The key to extract
 	 * @return NArray A new NArray with extracted values
 	 */
-	public function pluck( string|int $Key ): NArray
+	public function pluck( string|int $key ): NArray
 	{
-		return $this->map( function( $Item ) use ( $Key ) {
-			if( is_array( $Item ) && isset( $Item[ $Key ] ) )
+		return $this->map( function( $item ) use ( $key ) {
+			if( is_array( $item ) && isset( $item[ $key ] ) )
 			{
-				return $Item[ $Key ];
+				return $item[ $key ];
 			}
-			if( is_object( $Item ) && property_exists( $Item, $Key ) )
+			if( is_object( $item ) && property_exists( $item, $key ) )
 			{
-				return $Item->$Key;
+				return $item->$key;
 			}
 			return null;
 		});
@@ -449,8 +449,8 @@ class NArray
 	 */
 	public function sum(): int|float
 	{
-		return $this->reduce( function( $Carry, $Item ) {
-			return $Carry + ( is_numeric( $Item ) ? $Item : 0 );
+		return $this->reduce( function( $carry, $item ) {
+			return $carry + ( is_numeric( $item ) ? $item : 0 );
 		}, 0 );
 	}
 
@@ -461,10 +461,10 @@ class NArray
 	 */
 	public function avg(): int|float|null
 	{
-		$NumericValues = $this->filter( 'is_numeric' );
-		$Count = $NumericValues->count();
-		
-		return $Count > 0 ? $NumericValues->sum() / $Count : null;
+		$numericValues = $this->filter( 'is_numeric' );
+		$count = $numericValues->count();
+
+		return $count > 0 ? $numericValues->sum() / $count : null;
 	}
 
 	/**
@@ -489,24 +489,24 @@ class NArray
 
 	/**
 	 * Convert the array to JSON string.
-	 * 
-	 * @param int $Flags JSON encoding flags
+	 *
+	 * @param int $flags JSON encoding flags
 	 * @return string JSON representation of the array
 	 */
-	public function toJson( int $Flags = 0 ): string
+	public function toJson( int $flags = 0 ): string
 	{
-		return json_encode( $this->value, $Flags );
+		return json_encode( $this->value, $flags );
 	}
 
 	/**
 	 * Join array elements with a string.
-	 * 
-	 * @param string $Glue The string to join elements with
+	 *
+	 * @param string $glue The string to join elements with
 	 * @return string The joined string
 	 */
-	public function implode( string $Glue ): string
+	public function implode( string $glue ): string
 	{
-		return implode( $Glue, $this->value );
+		return implode( $glue, $this->value );
 	}
 
 	/**
