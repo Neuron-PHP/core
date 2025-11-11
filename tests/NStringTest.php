@@ -14,88 +14,116 @@ class NStringTest extends PHPUnit\Framework\TestCase
 {
 	const DATA = '123456789';
 
-	public $String;
+	public $string;
 
 	protected function setUp(): void
 	{
-		$this->String = new NString( $this::DATA );
+		$this->string = new NString( $this::DATA );
 
 		parent::setUp();
 	}
 
 	public function testConstruct()
 	{
-		$this->String = new NString( $this::DATA );
+		$this->string = new NString( $this::DATA );
 
-		$this->assertEquals( $this::DATA, $this->String->value );
+		$this->assertEquals( $this::DATA, $this->string->value );
 	}
 
 	public function testValue()
 	{
-		$this->String->value = '1234';
+		$this->string->value = '1234';
 
-		$this->assertEquals( '1234', $this->String->value );
+		$this->assertEquals( '1234', $this->string->value );
 	}
 
 	public function testLength()
 	{
-		$this->assertEquals( 9, $this->String->length() );
+		$this->assertEquals( 9, $this->string->length() );
 	}
 
 	public function testLeft()
 	{
-		$this->assertEquals( '123', $this->String->left( 3 ) );
+		$this->assertEquals( '123', $this->string->left( 3 ) );
 	}
 
 	public function testRight()
 	{
-		$this->assertEquals( '789', $this->String->right( 3 ) );
+		$this->assertEquals( '789', $this->string->right( 3 ) );
 	}
 
 	public function testMid()
 	{
-		$this->assertEquals( '5678', $this->String->mid( 4, 7 ) );
+		$this->assertEquals( '5678', $this->string->mid( 4, 7 ) );
 	}
 
 	public function testTrim()
 	{
-		$this->String->value = ' 123 ';
+		$this->string->value = ' 123 ';
 
-		$this->assertEquals( '123', $this->String->trim() );
+		$this->assertEquals( '123', $this->string->trim() );
 	}
 
 	public function testDeQuote()
 	{
-		$this->String->value = '"123"';
+		$this->string->value = '"123"';
 
-		$this->assertEquals( '123', $this->String->deQuote() );
+		$this->assertEquals( '123', $this->string->deQuote() );
 	}
 
 	public function testQuote()
 	{
-		$this->String->value = ' 123 ';
+		$this->string->value = ' 123 ';
 
-		$this->assertEquals( '"123"', $this->String->quote() );
+		$this->assertEquals( '"123"', $this->string->quote() );
 	}
 
 	public function testToCamelCase()
 	{
-		$this->String->value = 'this_is_a_test';
+		$this->string->value = 'this_is_a_test';
 
-		$this->assertEquals( 'ThisIsATest', $this->String->toCamelCase() );
+		$this->assertEquals( 'thisIsATest', $this->string->toCamelCase() );
 	}
 
-	public function testToCamelCaseNoCap()
+	public function testToPascalCase()
 	{
-		$this->String->value = 'this_is_a_test';
+		$this->string->value = 'this_is_a_test';
 
-		$this->assertEquals( 'thisIsATest', $this->String->toCamelCase( false ) );
+		$this->assertEquals( 'ThisIsATest', $this->string->toPascalCase() );
 	}
 
 	public function testToSnakeCase()
 	{
-		$this->String->value = 'ThisIsATest';
+		$this->string->value = 'ThisIsATest';
 
-		$this->assertEquals( 'this_is_a_test', $this->String->toSnakeCase() );
+		$this->assertEquals( 'this_is_a_test', $this->string->toSnakeCase() );
+	}
+
+	public function testToUpper()
+	{
+		$this->string->value = 'Hello World';
+
+		$this->assertEquals( 'HELLO WORLD', $this->string->toUpper() );
+	}
+
+	public function testToLower()
+	{
+		$this->string->value = 'Hello World';
+
+		$this->assertEquals( 'hello world', $this->string->toLower() );
+	}
+
+	public function testToUpperWithMixedCase()
+	{
+		$this->string->value = 'HeLLo WoRLd 123';
+
+		$this->assertEquals( 'HELLO WORLD 123', $this->string->toUpper() );
+	}
+
+	public function testToLowerWithMixedCase()
+	{
+		$this->string->value = 'HeLLo WoRLd 123';
+
+		$this->assertEquals( 'hello world 123', $this->string->toLower() );
 	}
 }
