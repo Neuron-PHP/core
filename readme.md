@@ -1,4 +1,5 @@
 [![CI](https://github.com/Neuron-PHP/core/actions/workflows/ci.yml/badge.svg)](https://github.com/Neuron-PHP/core/actions)
+[![codecov](https://codecov.io/gh/Neuron-PHP/core/graph/badge.svg)](https://codecov.io/gh/Neuron-PHP/core)
 # Neuron-PHP Core
 
 The foundational component of the Neuron PHP framework, providing essential utilities, string and array manipulation classes, and a comprehensive exception hierarchy for PHP 8.4+ applications.
