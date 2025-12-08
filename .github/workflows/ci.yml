@@ -26,7 +26,8 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         flags: core
-        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: Neuron-PHP/core
         fail_ci_if_error: false
