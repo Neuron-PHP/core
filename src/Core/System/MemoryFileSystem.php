@@ -286,4 +286,53 @@ class MemoryFileSystem implements IFileSystem
 		sort( $items );
 		return $items;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function glob( string $pattern ): array|false
+	{
+		// Convert glob pattern to regex
+		$regex = $this->globToRegex( $pattern );
+
+		$matches = [];
+
+		// Match files
+		foreach( $this->files as $path => $content )
+		{
+			if( preg_match( $regex, $path ) )
+			{
+				$matches[] = $path;
+			}
+		}
+
+		// Match directories
+		foreach( $this->directories as $path => $exists )
+		{
+			if( preg_match( $regex, $path ) )
+			{
+				$matches[] = $path;
+			}
+		}
+
+		sort( $matches );
+		return $matches;
+	}
+
+	/**
+	 * Convert glob pattern to regex pattern
+	 *
+	 * @param string $pattern Glob pattern (e.g., "/path/*.txt")
+	 * @return string Regex pattern
+	 */
+	private function globToRegex( string $pattern ): string
+	{
+		$escaped = preg_quote( $pattern, '/' );
+
+		// Replace escaped wildcard characters with regex equivalents
+		$regex = str_replace( '\*', '[^/]*', $escaped );
+		$regex = str_replace( '\?', '[^/]', $regex );
+
+		return '/^' . $regex . '$/';
+	}
 }

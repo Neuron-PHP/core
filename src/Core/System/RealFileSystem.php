@@ -93,4 +93,12 @@ class RealFileSystem implements IFileSystem
 	{
 		return scandir( $path );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function glob( string $pattern ): array|false
+	{
+		return glob( $pattern );
+	}
 }
