@@ -1,3 +1,6 @@
+## 0.8.1 2025-12-10
+* Added file system abstractions.
+
 ## 0.8.0 2025-11-11
 * Added pascalCase, toUpper and toLower functions to NString.
 * Conversion to camelcase.
