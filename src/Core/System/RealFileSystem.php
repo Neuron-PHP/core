@@ -57,4 +57,40 @@ class RealFileSystem implements IFileSystem
 	{
 		return file_put_contents( $path, $data );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function unlink( string $path ): bool
+	{
+		return @unlink( $path );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function mkdir( string $path, int $permissions = 0755, bool $recursive = true ): bool
+	{
+		if( $this->isDir( $path ) )
+		{
+			return true;
+		}
+		return @mkdir( $path, $permissions, $recursive );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function rmdir( string $path ): bool
+	{
+		return @rmdir( $path );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function scandir( string $path ): array|false
+	{
+		return scandir( $path );
+	}
 }
