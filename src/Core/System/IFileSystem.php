@@ -91,4 +91,12 @@ interface IFileSystem
 	 * @return array|false Array of filenames or false on failure
 	 */
 	public function scandir( string $path ): array|false;
+
+	/**
+	 * Find pathnames matching a pattern
+	 *
+	 * @param string $pattern Pattern to match (e.g., "/path/*.txt", "/path/**​/*.php")
+	 * @return array|false Array of matching paths or false on failure
+	 */
+	public function glob( string $pattern ): array|false;
 }

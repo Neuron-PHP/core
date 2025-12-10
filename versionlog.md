@@ -1,10 +1,15 @@
 ## 0.8.3
 
 ## 0.8.2 2025-12-10
-* Improved IFileSystem abstractions with additional methods.
+* Extended IFileSystem with directory operations: `mkdir()`, `rmdir()`, `scandir()`, and `unlink()` for comprehensive file system abstraction
+* Enables full testability of file-dependent code across the framework
+* Used by MVC FileCacheStorage for complete in-memory testing
 
 ## 0.8.1 2025-12-10
-* Added file system abstractions.
+* Added file system abstractions: `IFileSystem`, `RealFileSystem`, `MemoryFileSystem`
+* Core methods: `fileExists()`, `readFile()`, `writeFile()`, `isDir()`, `realpath()`, `getcwd()`
+* Provides testable abstraction over PHP native file functions
+* Enables components to be unit tested without touching real file system
 
 ## 0.8.0 2025-11-11
 * Added pascalCase, toUpper and toLower functions to NString.
