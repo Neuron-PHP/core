@@ -57,4 +57,38 @@ interface IFileSystem
 	 * @return int|false Number of bytes written or false on failure
 	 */
 	public function writeFile( string $path, string $data ): int|false;
+
+	/**
+	 * Delete a file
+	 *
+	 * @param string $path File path
+	 * @return bool True on success, false on failure
+	 */
+	public function unlink( string $path ): bool;
+
+	/**
+	 * Create a directory
+	 *
+	 * @param string $path Directory path
+	 * @param int $permissions Directory permissions (default 0755)
+	 * @param bool $recursive Create parent directories if needed (default true)
+	 * @return bool True on success, false on failure
+	 */
+	public function mkdir( string $path, int $permissions = 0755, bool $recursive = true ): bool;
+
+	/**
+	 * Remove a directory
+	 *
+	 * @param string $path Directory path
+	 * @return bool True on success, false on failure
+	 */
+	public function rmdir( string $path ): bool;
+
+	/**
+	 * List files and directories in a directory
+	 *
+	 * @param string $path Directory path
+	 * @return array|false Array of filenames or false on failure
+	 */
+	public function scandir( string $path ): array|false;
 }

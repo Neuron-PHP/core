@@ -168,4 +168,122 @@ class MemoryFileSystem implements IFileSystem
 	{
 		return $this->directories;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function unlink( string $path ): bool
+	{
+		if( !isset( $this->files[$path] ) )
+		{
+			return false;
+		}
+		unset( $this->files[$path] );
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function mkdir( string $path, int $permissions = 0755, bool $recursive = true ): bool
+	{
+		if( isset( $this->directories[$path] ) )
+		{
+			return true;
+		}
+
+		if( $recursive )
+		{
+			// Create parent directories if needed
+			$parts = explode( '/', trim( $path, '/' ) );
+			$current = '';
+			foreach( $parts as $part )
+			{
+				$current .= '/' . $part;
+				if( !isset( $this->directories[$current] ) )
+				{
+					$this->directories[$current] = true;
+				}
+			}
+		}
+
+		$this->directories[$path] = true;
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function rmdir( string $path ): bool
+	{
+		if( !isset( $this->directories[$path] ) )
+		{
+			return false;
+		}
+
+		// Check if directory is empty
+		foreach( $this->files as $filePath => $content )
+		{
+			if( strpos( $filePath, $path . '/' ) === 0 )
+			{
+				return false; // Directory not empty
+			}
+		}
+
+		foreach( $this->directories as $dirPath => $exists )
+		{
+			if( $dirPath !== $path && strpos( $dirPath, $path . '/' ) === 0 )
+			{
+				return false; // Directory not empty
+			}
+		}
+
+		unset( $this->directories[$path] );
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function scandir( string $path ): array|false
+	{
+		if( !isset( $this->directories[$path] ) )
+		{
+			return false;
+		}
+
+		$items = ['.', '..'];
+		$pathPrefix = rtrim( $path, '/' ) . '/';
+
+		// Find direct children (files)
+		foreach( $this->files as $filePath => $content )
+		{
+			if( strpos( $filePath, $pathPrefix ) === 0 )
+			{
+				$relativePath = substr( $filePath, strlen( $pathPrefix ) );
+				// Only direct children (no slashes in relative path)
+				if( strpos( $relativePath, '/' ) === false && $relativePath !== '' )
+				{
+					$items[] = $relativePath;
+				}
+			}
+		}
+
+		// Find direct children (directories)
+		foreach( $this->directories as $dirPath => $exists )
+		{
+			if( $dirPath !== $path && strpos( $dirPath, $pathPrefix ) === 0 )
+			{
+				$relativePath = substr( $dirPath, strlen( $pathPrefix ) );
+				// Only direct children (no slashes in relative path)
+				if( strpos( $relativePath, '/' ) === false && $relativePath !== '' )
+				{
+					$items[] = $relativePath;
+				}
+			}
+		}
+
+		sort( $items );
+		return $items;
+	}
 }

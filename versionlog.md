@@ -1,4 +1,5 @@
 ## 0.8.2
+* Improved IFileSystem abstractions with additional methods.
 
 ## 0.8.1 2025-12-10
 * Added file system abstractions.
