@@ -1,3 +1,5 @@
+## 0.8.2
+
 ## 0.8.1 2025-12-10
 * Added file system abstractions.
 
