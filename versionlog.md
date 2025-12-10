@@ -1,4 +1,4 @@
-## 0.8.3
+## 0.8.3 2025-12-10
 
 ## 0.8.2 2025-12-10
 * Extended IFileSystem with directory operations: `mkdir()`, `rmdir()`, `scandir()`, and `unlink()` for comprehensive file system abstraction
