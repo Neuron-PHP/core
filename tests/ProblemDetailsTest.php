@@ -1,6 +1,6 @@
 <?php
 
-namespace Neuron\Core\Tests;
+namespace Tests;
 
 use Neuron\Core\ProblemDetails\ProblemDetails;
 use Neuron\Core\ProblemDetails\ProblemType;
