@@ -1,7 +1,17 @@
+## 0.8.5 2026-01-07
+* Added ProblemDetails class for standardized error responses (RFC 7807)
+
 ## 0.8.4 2025-12-11
+* Added system abstractions for improved testability across the framework
+* **IClock interface** with `RealClock` and `FrozenClock` implementations - enables instant, deterministic time-based testing (no more sleep!)
+* **IRandom interface** with `RealRandom` (cryptographically secure) and `FakeRandom` (predictable) implementations - enables deterministic random value testing
+* **IHttpClient/IHttpResponse interfaces** with `RealHttpClient` (curl-based) and `MemoryHttpClient` (in-memory) implementations - enables HTTP testing without external dependencies
+* **ISession interface** with `RealSession` ($_SESSION wrapper) and `MemorySession` (in-memory) implementations - enables isolated session testing
+* All abstractions fully tested with 122 comprehensive tests
+* Time-dependent tests now run 200-250x faster using FrozenClock
+* Used by MVC FileCacheStorage, Routing RateLimitStorage, and CMS CsrfToken
 
 ## 0.8.3 2025-12-10
-
 ## 0.8.2 2025-12-10
 * Extended IFileSystem with directory operations: `mkdir()`, `rmdir()`, `scandir()`, and `unlink()` for comprehensive file system abstraction
 * Enables full testability of file-dependent code across the framework
