@@ -1,4 +1,4 @@
-## 0.8.5
+## 0.8.5 2026-01-07
 * Added ProblemDetails class for standardized error responses (RFC 7807)
 
 ## 0.8.4 2025-12-11
