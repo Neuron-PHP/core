@@ -2,6 +2,7 @@
 
 ## 0.8.5 2026-01-07
 * Added ProblemDetails class for standardized error responses (RFC 7807)
+* Adds additional http code based events.
 
 ## 0.8.4 2025-12-11
 * Added system abstractions for improved testability across the framework
