@@ -1,3 +1,5 @@
+## 0.8.7 2026-01-13
+
 ## 0.8.6 2026-01-13
 * Added RegistryKeys constants.
 
