@@ -1,15 +1,11 @@
 ## 0.8.12
+* Update for flash expiration in sessions.
 
 ## 0.8.11 2026-01-13
-
 ## 0.8.10 2026-01-13
-
 ## 0.8.9 2026-01-13
-
 ## 0.8.8 2026-01-13
-
 ## 0.8.7 2026-01-13
-
 ## 0.8.6 2026-01-13
 * Added RegistryKeys constants.
 

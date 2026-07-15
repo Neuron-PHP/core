@@ -169,22 +169,28 @@ class RealSession implements ISession
 	}
 
 	/**
-	 * Age flash data - move new flash to old, remove old flash
+	 * Age flash data - promote newly written flashes so they become readable
+	 * on this (the next) request.
+	 *
+	 * Existing FLASH_KEY data is deliberately preserved: other components
+	 * (e.g. the CMS SessionManager) write flash messages directly to
+	 * FLASH_KEY with delete-on-read semantics, and this method runs on the
+	 * first session start of every request - clearing FLASH_KEY here would
+	 * destroy those messages before they could ever be displayed. Flashes
+	 * are removed by getFlash() when they are read instead.
 	 *
 	 * @return void
 	 */
 	private function ageFlashData(): void
 	{
-		// Remove old flash data
-		if( isset( $_SESSION[self::FLASH_KEY] ) )
-		{
-			unset( $_SESSION[self::FLASH_KEY] );
-		}
-
-		// Move new flash to old
+		// Promote new flash data, merging over any directly written flashes
 		if( isset( $_SESSION[self::FLASH_NEW_KEY] ) )
 		{
-			$_SESSION[self::FLASH_KEY] = $_SESSION[self::FLASH_NEW_KEY];
+			$_SESSION[self::FLASH_KEY] = array_merge(
+				$_SESSION[self::FLASH_KEY] ?? [],
+				$_SESSION[self::FLASH_NEW_KEY]
+			);
+
 			unset( $_SESSION[self::FLASH_NEW_KEY] );
 		}
 	}
