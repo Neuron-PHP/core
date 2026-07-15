@@ -173,22 +173,25 @@ class MemorySession implements ISession
 	}
 
 	/**
-	 * Age flash data - move new flash to old, remove old flash
+	 * Age flash data - promote newly written flashes so they become readable
+	 * on this (the next) request.
+	 *
+	 * Existing FLASH_KEY data is preserved (matching RealSession): other
+	 * components may write flash messages directly to FLASH_KEY with
+	 * delete-on-read semantics. Flashes are removed by getFlash() when read.
 	 *
 	 * @return void
 	 */
 	private function ageFlashData(): void
 	{
-		// Remove old flash data
-		if( isset( $this->data[self::FLASH_KEY] ) )
-		{
-			unset( $this->data[self::FLASH_KEY] );
-		}
-
-		// Move new flash to old
+		// Promote new flash data, merging over any directly written flashes
 		if( isset( $this->data[self::FLASH_NEW_KEY] ) )
 		{
-			$this->data[self::FLASH_KEY] = $this->data[self::FLASH_NEW_KEY];
+			$this->data[self::FLASH_KEY] = array_merge(
+				$this->data[self::FLASH_KEY] ?? [],
+				$this->data[self::FLASH_NEW_KEY]
+			);
+
 			unset( $this->data[self::FLASH_NEW_KEY] );
 		}
 	}

@@ -241,6 +241,29 @@ class MemorySessionTest extends TestCase
 		$this->assertEquals( 'default', $value );
 	}
 
+	/**
+	 * Regression test: flash data written directly to the '_flash' key by
+	 * other components (e.g. the CMS SessionManager) must survive aging on
+	 * session start. Aging previously cleared '_flash' unconditionally,
+	 * destroying those messages before they could be displayed.
+	 */
+	public function testAgingPreservesDirectlyWrittenFlashData(): void
+	{
+		$this->session->start();
+
+		// Simulate another component writing directly to '_flash',
+		// plus this session's own pending flash in '_flash_new'.
+		$this->session->set( '_flash', [ 'direct_msg' => 'Written directly' ] );
+		$this->session->flash( 'own_msg', 'Written via flash()' );
+
+		$reflection = new \ReflectionMethod( $this->session, 'ageFlashData' );
+		$reflection->invoke( $this->session );
+
+		$this->assertEquals( 'Written directly', $this->session->getFlash( 'direct_msg' ) );
+		$this->assertEquals( 'Written via flash()', $this->session->getFlash( 'own_msg' ) );
+		$this->assertArrayNotHasKey( '_flash_new', $this->session->all() );
+	}
+
 	public function testMultipleFlashMessages(): void
 	{
 		$this->session->start();
