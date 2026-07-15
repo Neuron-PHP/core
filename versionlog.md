@@ -1,4 +1,4 @@
-## 0.8.12
+## 0.8.12 2026-07-14
 * Update for flash expiration in sessions.
 
 ## 0.8.11 2026-01-13
