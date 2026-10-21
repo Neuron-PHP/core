@@ -202,6 +202,14 @@ class RegistryKeys
 	 */
 	public const ROUTING_CONTROLLER_PATHS = 'Routing.ControllerPaths';
 
+	/**
+	 * Web component providers the MVC application loaded at boot
+	 * (list of Neuron\Mvc\Components\IComponentProvider class names), so
+	 * the host application can ask them for navigation and the like.
+	 * @var string
+	 */
+	public const MVC_COMPONENTS = 'Mvc.Components';
+
 	// ================================================================================
 	// Exception Handling Keys
 	// ================================================================================
