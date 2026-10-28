@@ -3,6 +3,7 @@
 namespace Tests\Core\H;
 
 use Neuron\Core\H\Error;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -42,9 +43,7 @@ class ErrorTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider commonErrorConstantsProvider
-	 */
+	#[DataProvider( 'commonErrorConstantsProvider' )]
 	public function testCommonErrorConstants(string $constantName, int $expectedValue): void
 	{
 		$fullConstant = Error::class . '::' . $constantName;
@@ -128,9 +127,7 @@ class ErrorTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider networkErrorConstantsProvider
-	 */
+	#[DataProvider( 'networkErrorConstantsProvider' )]
 	public function testNetworkErrorConstants(string $constantName, int $expectedValue): void
 	{
 		$this->assertEquals($expectedValue, constant(Error::class . '::' . $constantName));

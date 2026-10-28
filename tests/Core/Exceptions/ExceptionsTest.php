@@ -12,6 +12,7 @@ use Neuron\Core\Exceptions\NotFound;
 use Neuron\Core\Exceptions\PropertyNotFound;
 use Neuron\Core\Exceptions\RouteParam;
 use Neuron\Core\Exceptions\Validation;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -40,9 +41,9 @@ class ExceptionsTest extends TestCase
 	}
 
 	/**
-	 * @dataProvider simpleExceptionClassProvider
 	 * @param class-string<\Exception> $exceptionClass
 	 */
+	#[DataProvider( 'simpleExceptionClassProvider' )]
 	public function testSimpleExceptionCanBeInstantiated(string $exceptionClass): void
 	{
 		$exception = new $exceptionClass();
@@ -52,9 +53,9 @@ class ExceptionsTest extends TestCase
 	}
 
 	/**
-	 * @dataProvider simpleExceptionClassProvider
 	 * @param class-string<\Exception> $exceptionClass
 	 */
+	#[DataProvider( 'simpleExceptionClassProvider' )]
 	public function testSimpleExceptionWithMessage(string $exceptionClass): void
 	{
 		$message = 'Test exception message';
@@ -64,9 +65,9 @@ class ExceptionsTest extends TestCase
 	}
 
 	/**
-	 * @dataProvider simpleExceptionClassProvider
 	 * @param class-string<\Exception> $exceptionClass
 	 */
+	#[DataProvider( 'simpleExceptionClassProvider' )]
 	public function testSimpleExceptionWithMessageAndCode(string $exceptionClass): void
 	{
 		$message = 'Test exception message';
