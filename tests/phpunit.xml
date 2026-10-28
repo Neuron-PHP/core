@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./bootstrap.php" backupGlobals="false" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage includeUncoveredFiles="true">
-    <include>
-      <directory suffix=".php">../src</directory>
-    </include>
-  </coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./bootstrap.php" backupGlobals="false" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.4/phpunit.xsd" cacheDirectory=".phpunit.cache">
   <testsuites>
     <testsuite name="unit">
       <directory>tests</directory>
     </testsuite>
   </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">../src</directory>
+    </include>
+  </source>
 </phpunit>
